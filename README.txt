@@ -1,5 +1,5 @@
 
-Shuddo (A data filtering library for Python)
+Shuddo (A data processing library for Python)
 
 version 1.0
 --------------------------------------------------------------------------------------
