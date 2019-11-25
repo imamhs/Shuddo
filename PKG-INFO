@@ -1,0 +1,14 @@
+Metadata-Version: 1.0
+Name: Shuddo
+Version: 1.0
+Summary: A data filtering library for Python
+Home-page: 
+Author: Md Imam Hossain
+Author-email: emamhd@gmail.com
+License: UNKNOWN
+Download-URL: 
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Provides: shuddo
