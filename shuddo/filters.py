@@ -19,14 +19,14 @@ def S_moving_average_data(_data_list, _smoothing=1):
 
     for i in range(ds):
         if i < fc:
-            db = _data_list[:i+fc+1]
+            db = _data_list[:i+i+1]
             nfc = len(db)
             ma_data.append(sum(db)/nfc)
         elif i >= fc:
             if i < (ds - fc):
                 ma_data.append(sum(_data_list[i-fc:i+fc+1])/(fmas+1))
             else:
-                db = _data_list[i-fc:]
+                db = _data_list[i-(ds-i-1):]
                 nfc = len(db)
                 ma_data.append(sum(db)/nfc)
     
