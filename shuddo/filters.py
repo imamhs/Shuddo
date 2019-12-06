@@ -13,7 +13,7 @@ def S_moving_average_data(_data_list, _smoothing=1):
     ma_data = []    
     ds = len(_data_list)
     s = _smoothing
-    mas = int((len(_data_list)*0.02) * s)
+    mas = int((ds * 0.02) * s)
     fc = int(mas/2)
     fmas = fc * 2
 
