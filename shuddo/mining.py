@@ -12,28 +12,30 @@ def S_get_peak(_data_list, _cursor=0, _base_line=0):
 
     data_point = []
     peak_value = 0
-    peak_location = 0
     cursor = _cursor
+    peak_start_location = -1 # negative for indicating not set
     peak_width = 0
 
     try:
         while _data_list[cursor] == _base_line:
             cursor += 1
     except IndexError:
-        return (0, -1, -1, -1)
+        return (0, -1, -1, -1, -1)
 
     try:
         if _data_list[cursor] < _base_line:
+            peak_start_location = cursor
             while _data_list[cursor] < _base_line:
                 data_point.append(_data_list[cursor])
                 cursor += 1
-                peak_width += 1
+            peak_width = cursor - peak_start_location
             peak_value = min(data_point)
         elif _data_list[cursor] > _base_line:
+            peak_start_location = cursor
             while _data_list[cursor] > _base_line:
                 data_point.append(_data_list[cursor])
                 cursor += 1
-                peak_width += 1
+            peak_width = cursor - peak_start_location
             peak_value = max(data_point)
 
     except IndexError:
@@ -41,54 +43,47 @@ def S_get_peak(_data_list, _cursor=0, _base_line=0):
             peak_value = min(data_point)
         elif _data_list[cursor-1] > _base_line:
             peak_value = max(data_point)
-        return (peak_value, _cursor + (peak_width / 2), peak_width, cursor)
+        peak_width = (cursor-1) - peak_start_location
+        return (peak_value, _cursor + (peak_width / 2), peak_width, peak_start_location, cursor-1)
     finally:
-        return (peak_value, _cursor+(peak_width/2), peak_width, cursor)
+        return (peak_value, _cursor + (peak_width/2), peak_width, peak_start_location, cursor)
         
         
-def S_get_all_peaks(_data_list, _gradient=5, _noise=5):
-    
-    
-    pass
-    ds_data = []   
+def S_get_all_peaks(_data_list, _level=0.5, _step=1):
+    """
+    Returns all the peaks available in the data based on height differences between points next to each other as set by level, step defines number of points to skip for checking the level difference
+    """
+
     ds = len(_data_list)
-    skip_count = 0
     
     peaks = []
     data_point = []
-    peak_value = 0
-    peak_location = -1
-    peak_width = 0
-    level_change = 0
-    peak_start_location = -1
-    peak_end_location = -1
-    
-    for i in range(ds-1):
-        
-        if skip_count < _noise:
-            if peak_start_location > 0:
-                data_point.append(_data_list[i])
-            skip_count += 1
-        else:
-            level_change = _data_list[i+1] - _data_list[i]
-            if level_change > _gradient and peak_start_location == -1:
-                peak_start_location = i
-            elif level_change < -_gradient and peak_end_location == -1:
-                peak_end_location = i
-            
-            if peak_start_location > 0 and peak_end_location > 0:
-                if len(data_point) > 2:
-                    peak_width = peak_end_location - peak_start_location
-                    peak_location = peak_start_location + (peak_width/2)
-                    peak_value = max(data_point)
-                    peaks.append((peak_value, peak_location, peak_width))
-                    data_point.clear()
-                    peak_start_location = -1
-                    peak_end_location = -1
-                    peak_width = 0
-                    peak_location = -1
-                    peak_value = -1
-                
-            skip_count = 0
+    peak_start_location = -1 # negative for indicating not set
+    peak_end_location = -1 # negative for indicating not set
+    cursor = 0
+
+    while cursor < (ds - _step):
+
+        level_change = _data_list[cursor + _step] - _data_list[cursor]
+        if level_change > _level and peak_start_location == -1:
+            peak_start_location = cursor
+        elif level_change < -_level and peak_end_location == -1 and peak_start_location > 0:
+            peak_end_location = cursor
+
+        if peak_start_location > 0:
+            data_point.append(_data_list[cursor])
+
+        if peak_start_location > 0 and peak_end_location > 0:
+            if len(data_point) > 2:
+                half_width = (peak_end_location - peak_start_location)
+                peak_width = half_width * 2
+                peak_location = peak_end_location
+                peak_value = max(data_point)
+                peaks.append((peak_value, peak_location, peak_width, peak_start_location))
+                data_point.clear()
+                peak_start_location = -1
+                peak_end_location = -1
+
+        cursor += _step
     
     return peaks
