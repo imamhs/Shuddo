@@ -87,3 +87,76 @@ def S_get_all_peaks(_data_list, _level=0.5, _step=1):
         cursor += _step
     
     return peaks
+
+def S_is_neighbour(_data_list, _sample, _similarity=0.8):
+    """
+    Checks if provided a sample is in close proximity for a given data samples
+    """
+
+    ds = len(_data_list)
+
+    for i in range(ds):
+
+        x_sim = -1
+        y_sim = -1
+
+        if _data_list[i][0] == _sample[0]:
+            x_sim = 1.0
+        elif _data_list[i][0] > _sample[0]:
+            x_sim = _sample[0] / _data_list[i][0]
+        elif _data_list[i][0] < _sample[0]:
+            x_sim = _data_list[i][0] / _sample[0]
+
+        if _data_list[i][1] == _sample[1]:
+            y_sim = 1.0
+        elif _data_list[i][1] > _sample[1]:
+            y_sim = _sample[1] / _data_list[i][1]
+        elif _data_list[i][1] < _sample[1]:
+            y_sim = _data_list[i][1] / _sample[1]
+
+        if x_sim >= _similarity and y_sim >= _similarity:
+            return True
+
+    return False
+
+def S_get_cluster_centroid(_data_list):
+    """
+    Finds the centroid of a given two dimensional data samples
+    """
+    ds = len(_data_list)
+
+    if ds > 0:
+        x_sum = 0
+        y_sum = 0
+        for i in _data_list:
+            x_sum += i[0]
+            y_sum += i[1]
+        return (x_sum / ds, y_sum / ds)
+
+def S_get_clusters(_data_list, _similarity=0.8):
+    """
+    Finds the clusters present for a given two dimensional scattered data samples
+    """
+
+    clusters = []
+    centroids = []
+    ds = len(_data_list)
+
+    for i in range(ds):
+
+        if len(clusters) == 0:
+            clusters.append([(_data_list[i][0], _data_list[i][1])])
+        else:
+            neighbour = False
+            for ii in range(len(clusters)):
+                if S_is_neighbour(clusters[ii], _data_list[i], _similarity=_similarity):
+                    clusters[ii].append((_data_list[i][0], _data_list[i][1]))
+                    neighbour = True
+                    break
+            if neighbour == False:
+                clusters.append([(_data_list[i][0], _data_list[i][1])])
+
+    for i in clusters:
+        centroids.append(S_get_cluster_centroid(i))
+
+    return list(zip(clusters, centroids))
