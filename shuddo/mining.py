@@ -67,15 +67,16 @@ def S_get_all_peaks(_data_list, _level=0.5, _step=1):
     while cursor < (ds - _step):
 
         level_change = _data_list[cursor + _step] - _data_list[cursor]
+
         if level_change > _level and peak_start_location == -1:
             peak_start_location = cursor
-        elif level_change < -_level and peak_end_location == -1 and peak_start_location > 0:
+        elif level_change < -_level and peak_end_location == -1 and peak_start_location >= 0:
             peak_end_location = cursor
 
-        if peak_start_location > 0:
+        if peak_start_location >= 0:
             data_point.append(_data_list[cursor])
 
-        if peak_start_location > 0 and peak_end_location > 0:
+        if peak_start_location >= 0 and peak_end_location >= 0:
             if len(data_point) > 2:
                 half_width = (peak_end_location - peak_start_location)
                 peak_width = half_width * 2
