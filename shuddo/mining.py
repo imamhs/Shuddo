@@ -70,7 +70,7 @@ def S_get_all_peaks(_data_list, _level=0.5, _step=1):
 
         if level_change > _level and peak_start_location == -1:
             peak_start_location = cursor
-        elif level_change < -_level and peak_end_location == -1 and peak_start_location >= 0:
+        elif level_change < 0 and peak_end_location == -1 and peak_start_location >= 0:
             peak_end_location = cursor
 
         if peak_start_location >= 0:
