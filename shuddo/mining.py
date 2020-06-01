@@ -5,6 +5,8 @@
 Data mining functions
 """
 
+import math
+
 def S_get_peak(_data_list, _cursor=0, _base_line=0):
     """
     Returns the features of a first positive or negative peak from the data, define horizontal separation for the peak detection by setting the base line, define detection starting location by setting the cursor
@@ -97,24 +99,16 @@ def S_is_neighbour(_data_list, _sample, _similarity=0.8):
 
     for i in range(ds):
 
-        x_sim = -1
-        y_sim = -1
+        x_sim = False
+        y_sim = False
 
-        if _data_list[i][0] == _sample[0]:
-            x_sim = 1.0
-        elif _data_list[i][0] > _sample[0]:
-            x_sim = _sample[0] / _data_list[i][0]
-        elif _data_list[i][0] < _sample[0]:
-            x_sim = _data_list[i][0] / _sample[0]
+        if math.isclose(_data_list[i][0], _sample[0], abs_tol=_similarity):
+            x_sim = True
 
-        if _data_list[i][1] == _sample[1]:
-            y_sim = 1.0
-        elif _data_list[i][1] > _sample[1]:
-            y_sim = _sample[1] / _data_list[i][1]
-        elif _data_list[i][1] < _sample[1]:
-            y_sim = _data_list[i][1] / _sample[1]
+        if math.isclose(_data_list[i][1], _sample[1], abs_tol=_similarity):
+            y_sim = True
 
-        if x_sim >= _similarity and y_sim >= _similarity:
+        if x_sim and y_sim:
             return True
 
     return False
