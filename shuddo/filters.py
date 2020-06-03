@@ -1,9 +1,11 @@
-# Copyright (c) 2019, Md Imam Hossain (emamhd at gmail dot com)
+# Copyright (c) 2020, Md Imam Hossain (emamhd at gmail dot com)
 # see LICENSE.txt for details
 
 """
 Data filtering functions
 """
+
+from math import pi, cos, sin
 
 def S_moving_average_data(_data_list, _smoothing=1):
     """
@@ -52,3 +54,46 @@ def S_downsample(_data_list, _factor=1):
             skip_count = 0
         
     return ds_data
+
+def S_linear_function(_point1, _point2, _npoints):
+    """
+    Returns a list of points linearly interpolated between point1 and point2 with npoints number of points.
+    """
+
+    if _npoints < 1:
+        return []
+
+    points = []
+
+    step = 1 / (_npoints-1)
+    t = 0
+    d = _point2[0] - _point1[0]
+
+    while t <= 1:
+        x = _point1[0] + (d*t)
+        points.append((x,(_point1[1]*(1-t))+(_point2[1]*t)))
+        t += step
+
+    return points
+
+def S_cosine_function(_point1, _point2, _npoints):
+    """
+    Returns a list of points Cosine interpolated between point1 and point2 with npoints number of points.
+    """
+
+    if _npoints < 1:
+        return []
+
+    points = []
+
+    step = 1 / (_npoints-1)
+    t = 0
+    d = _point2[0] - _point1[0]
+
+    while t <= 1:
+        x = _point1[0] + (d*t)
+        t1 = (1-cos(t*pi))/2
+        points.append((x,(_point1[1]*(1-t1))+(_point2[1]*t1)))
+        t += step
+
+    return points

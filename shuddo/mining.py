@@ -5,7 +5,7 @@
 Data mining functions
 """
 
-import math
+from math import isclose
 
 def S_get_peak(_data_list, _cursor=0, _base_line=0):
     """
@@ -81,8 +81,10 @@ def S_get_all_peaks(_data_list, _level=0.5, _step=1):
                 half_width = (peak_end_location - peak_start_location)
                 peak_width = half_width * 2
                 peak_location = peak_end_location
+                peak_valley = min(data_point)
                 peak_value = max(data_point)
-                peaks.append((peak_value, peak_location, peak_width, peak_start_location))
+                peak_height = abs(peak_value - peak_valley)
+                peaks.append((peak_value, peak_location, peak_width, peak_height, peak_start_location))
                 data_point.clear()
                 peak_start_location = -1
                 peak_end_location = -1
@@ -103,10 +105,10 @@ def S_is_neighbour(_data_list, _sample, _similarity=0.8):
         x_sim = False
         y_sim = False
 
-        if math.isclose(_data_list[i][0], _sample[0], abs_tol=_similarity):
+        if isclose(_data_list[i][0], _sample[0], abs_tol=_similarity):
             x_sim = True
 
-        if math.isclose(_data_list[i][1], _sample[1], abs_tol=_similarity):
+        if isclose(_data_list[i][1], _sample[1], abs_tol=_similarity):
             y_sim = True
 
         if x_sim and y_sim:
