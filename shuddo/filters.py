@@ -97,3 +97,26 @@ def S_cosine_function(_point1, _point2, _npoints):
         t += step
 
     return points
+
+def S_filter_data(_data_list, _max, _min):
+    """
+    returns a filtered data where values are discarded according to max, min limits
+    """
+
+    f_data = []
+    ds = len(_data_list)
+
+    i = 0
+
+    while i < ds:
+
+        if _data_list[i] >= _max:
+            f_data.append(_max)
+        elif _data_list[i] <= _min:
+            f_data.append(_min)
+        else:
+            f_data.append(_data_list[i])
+
+        i += 1
+
+    return f_data
