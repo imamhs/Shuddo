@@ -132,7 +132,7 @@ def S_get_cluster_centroid(_data_list):
 
 def S_get_clusters(_data_list, _similarity=0.8):
     """
-    Finds the clusters present for a given two dimensional scattered data samples
+    Finds the clusters present for given two dimensional scattered data samples
     """
 
     clusters = []
@@ -157,3 +157,38 @@ def S_get_clusters(_data_list, _similarity=0.8):
         centroids.append(S_get_cluster_centroid(i))
 
     return list(zip(clusters, centroids))
+
+def S_get_histogram(_data_list, _level=0.1):
+    """
+    Finds the groups present for given data samples
+    Groups will be divided based on value difference as set by level
+    """
+
+    s_data = sorted(_data_list)
+
+    bins = []
+    bin_cursor = 0
+    averages = []
+    counts = []
+    comparator = s_data[0]
+
+    bins.append([s_data[0]])
+
+    ds = len(s_data)
+
+    for i in range(1, ds):
+        if s_data[i] > (comparator + _level):
+            bin_cursor += 1
+            bins.append([s_data[i]])
+            comparator = s_data[i]
+            continue
+        else:
+            bins[bin_cursor].append(s_data[i])
+
+    for i in bins:
+        sz = len(i)
+        averages.append(sum(i)/sz)
+        counts.append(sz)
+
+    return list(zip(averages, counts))
+
