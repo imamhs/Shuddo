@@ -5,7 +5,7 @@
 Data mining functions
 """
 
-from math import isclose
+from math import isclose, hypot, pi
 
 def S_get_peak(_data_list, _cursor=0, _base_line=0):
     """
@@ -118,7 +118,7 @@ def S_is_neighbour(_data_list, _sample, _similarity=0.8):
 
 def S_get_cluster_centroid(_data_list):
     """
-    Finds the centroid of a given two dimensional data samples
+    Finds the centroid of a given two dimensional data samples cluster
     """
     ds = len(_data_list)
 
@@ -129,6 +129,22 @@ def S_get_cluster_centroid(_data_list):
             x_sum += i[0]
             y_sum += i[1]
         return (x_sum / ds, y_sum / ds)
+
+def S_get_cluster_radius(_data_list, _center):
+    """
+    Finds the radius of a given two dimensional data samples cluster
+    """
+
+    ds = len(_data_list)
+
+    if ds > 0:
+        dists = []
+        for i in _data_list:
+            dists.append(hypot(i[0] - _center[0], i[1] - _center[1]))
+        radius = max(dists)
+        if radius == 0:
+            return 0
+        return (radius, ds/(pi*(radius**2)))
 
 def S_get_clusters(_data_list, _similarity=0.8):
     """
