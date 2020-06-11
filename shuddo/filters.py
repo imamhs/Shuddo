@@ -39,20 +39,20 @@ def S_downsample(_data_list, _factor=1):
     """
     Returns a two dimensional data set with a reduced number of samples.
     Use the sample skipping factor to get required result, the factor tells how many samples to skip for one data sample
-    """    
-    
-    ds_data = []   
+    """
+
+    ds_data = []
     ds = len(_data_list)
     skip_count = 0
-    
+
     for i in range(ds):
-        
+
         if skip_count < _factor:
             skip_count += 1
         else:
             ds_data.append((_data_list[i][0], _data_list[i][1]))
             skip_count = 0
-        
+
     return ds_data
 
 def S_linear_function(_point1, _point2, _npoints):
@@ -60,8 +60,8 @@ def S_linear_function(_point1, _point2, _npoints):
     Returns a list of points linearly interpolated between point1 and point2 with npoints number of points.
     """
 
-    if _npoints < 1:
-        return []
+    if _npoints < 3:
+        return [_point1, _point2]
 
     points = []
 
@@ -76,13 +76,32 @@ def S_linear_function(_point1, _point2, _npoints):
 
     return points
 
+
+def S_upsample(_data_list, _factor=1):
+    """
+    Returns a two dimensional data set with an increased number of samples.
+    Use the sample skipping factor to get required result, the factor tells how many samples to skip for one data sample
+    """
+
+    ds_data = []
+    ds = len(_data_list)
+
+    for i in range(ds - 1):
+
+        inter = S_linear_function((_data_list[i][0], _data_list[i][1]), (_data_list[i + 1][0], _data_list[i + 1][1]), _factor + 2)
+
+        for ii in inter:
+            ds_data.append((ii[0], ii[1]))
+
+    return ds_data
+
 def S_cosine_function(_point1, _point2, _npoints):
     """
     Returns a list of points Cosine interpolated between point1 and point2 with npoints number of points.
     """
 
-    if _npoints < 1:
-        return []
+    if _npoints < 4:
+        return [_point1, _point2]
 
     points = []
 

@@ -1,6 +1,7 @@
 from .filters import S_moving_average_data
 from .filters import S_downsample
 from .filters import S_linear_function
+from .filters import S_upsample
 from .filters import S_cosine_function
 from .filters import S_filter_data
 from .mining import S_get_peak
