@@ -43,7 +43,7 @@ def S_downsample(_data_list, _factor=1):
 
     ds_data = []
     ds = len(_data_list)
-    skip_count = 0
+    skip_count = _factor
 
     for i in range(ds):
 
@@ -77,21 +77,30 @@ def S_linear_function(_point1, _point2, _npoints):
     return points
 
 
-def S_upsample(_data_list, _factor=1):
+def S_upsample(_data_list, _factor=1, _smooth=False):
     """
     Returns a two dimensional data set with an increased number of samples.
-    Use the sample skipping factor to get required result, the factor tells how many samples to skip for one data sample
+    The factor tells how many samples to add for one data sample where the smooth is to use smooth cosine interpolation for added samples
     """
 
     ds_data = []
     ds = len(_data_list)
+    inter_f = None
+
+    if _smooth == True:
+        inter_f = S_cosine_function
+    else:
+        inter_f = S_linear_function
 
     for i in range(ds - 1):
 
-        inter = S_linear_function((_data_list[i][0], _data_list[i][1]), (_data_list[i + 1][0], _data_list[i + 1][1]), _factor + 2)
+        inter = inter_f((_data_list[i][0], _data_list[i][1]), (_data_list[i + 1][0], _data_list[i + 1][1]), _factor + 2)
+        irs = len(inter)
 
-        for ii in inter:
-            ds_data.append((ii[0], ii[1]))
+        for ii in range(irs - 1):
+            ds_data.append((inter[ii][0], inter[ii][1]))
+
+    ds_data.append((_data_list[-1][0], _data_list[-1][1]))
 
     return ds_data
 
@@ -116,6 +125,8 @@ def S_cosine_function(_point1, _point2, _npoints):
         t += step
 
     return points
+
+
 
 def S_filter_data(_data_list, _max, _min):
     """
