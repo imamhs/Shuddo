@@ -5,7 +5,7 @@
 Data filtering functions
 """
 
-from math import pi, cos, sin
+from math import pi, cos
 
 def S_moving_average_data(_data_list, _smoothing=1):
     """
@@ -86,15 +86,17 @@ def S_upsample(_data_list, _factor=1, _smooth=False):
     ds_data = []
     ds = len(_data_list)
     inter_f = None
+    smoothing_f = 3
 
     if _smooth == True:
         inter_f = S_cosine_function
+        smoothing_f = 4
     else:
         inter_f = S_linear_function
 
     for i in range(ds - 1):
 
-        inter = inter_f((_data_list[i][0], _data_list[i][1]), (_data_list[i + 1][0], _data_list[i + 1][1]), _factor + 2)
+        inter = inter_f((_data_list[i][0], _data_list[i][1]), (_data_list[i + 1][0], _data_list[i + 1][1]), _factor + smoothing_f)
         irs = len(inter)
 
         for ii in range(irs - 1):
@@ -126,8 +128,6 @@ def S_cosine_function(_point1, _point2, _npoints):
 
     return points
 
-
-
 def S_filter_data(_data_list, _max, _min):
     """
     returns a filtered data where values are discarded according to max, min limits
@@ -150,3 +150,54 @@ def S_filter_data(_data_list, _max, _min):
         i += 1
 
     return f_data
+
+def S_uniform_spread(_data_list, _nsamples):
+    """
+    returns a uniformly spread data samples where samples size is fixed by nsamples
+    """
+    u_data = []
+
+    ds = len(_data_list)
+    d = _data_list[-1][0] - _data_list[0][0]
+    sl = (d/_nsamples)
+    dc = 0
+
+    u_data.append((_data_list[0][0], _data_list[0][1]))
+
+    for i in range(1, _nsamples):
+
+        x = i * sl
+
+        for ii in range(dc, ds):
+            if _data_list[ii][0] >= x:
+                dc = ii
+                break
+
+        d = _data_list[dc][0] - _data_list[dc-1][0]
+        t = (x -  _data_list[dc-1][0]) / d
+
+        u_data.append((x, (_data_list[dc-1][1] * (1 - t)) + (_data_list[dc][1] * t)))
+
+    u_data.append((_data_list[-1][0], _data_list[-1][1]))
+
+    return u_data
+
+def S_smooth_data(_data_list, _smoothing=1):
+    """
+    returns data samples with smooth profiles applied in between the sample points
+    """
+
+    s_data = []
+    ds = len(_data_list)
+
+    for i in range(ds-1):
+
+        inter = S_cosine_function((_data_list[i][0], _data_list[i][1]), (_data_list[i+1][0], _data_list[i+1][1]), _npoints=_smoothing+4)
+        irs = len(inter)
+
+        for ii in range(irs - 1):
+            s_data.append((inter[ii][0], inter[ii][1]))
+
+    s_data.append((_data_list[-1][0], _data_list[-1][1]))
+
+    return s_data
