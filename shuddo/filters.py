@@ -201,3 +201,16 @@ def S_smooth_data(_data_list, _smoothing=1):
     s_data.append((_data_list[-1][0], _data_list[-1][1]))
 
     return s_data
+
+def S_adjust_phase(_data_list, _transform):
+    """
+    returns data samples where the phase is moved by transform amount
+    """
+
+    a_data = []
+    ds = len(_data_list)
+
+    for i in range(ds):
+        a_data.append((_data_list[i][0]+_transform, _data_list[i][1]))
+
+    return a_data

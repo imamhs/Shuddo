@@ -6,6 +6,7 @@ from .filters import S_cosine_function
 from .filters import S_filter_data
 from .filters import S_uniform_spread
 from .filters import S_smooth_data
+from .filters import S_adjust_phase
 from .mining import S_get_peak
 from .mining import S_get_all_peaks
 from .mining import S_is_neighbour
