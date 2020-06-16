@@ -214,3 +214,46 @@ def S_adjust_phase(_data_list, _transform):
         a_data.append((_data_list[i][0]+_transform, _data_list[i][1]))
 
     return a_data
+
+def S_scale_data(_data_list, _factor):
+    """
+    returns data samples where y axis values are scaled by the factor
+    """
+
+    s_data = []
+    ds = len(_data_list)
+
+    for i in range(ds):
+        s_data.append((_data_list[i][0], _data_list[i][1]*_factor))
+
+    return s_data
+
+def S_shift_data(_data_list, _transform):
+    """
+    returns data samples where y axis values are translated by transform amount
+    """
+
+    s_data = []
+    ds = len(_data_list)
+
+    for i in range(ds):
+        s_data.append((_data_list[i][0], _data_list[i][1]+_transform))
+
+    return s_data
+
+def S_convolute_data(_data_list, _transformer):
+    """
+    returns new data samples where y axis values are transformed by transformer y axis values
+    """
+
+    c_data = []
+    ds = len(_data_list)
+    ts = len(_transformer)
+
+    if ds != ts:
+        return []
+
+    for i in range(ds):
+        c_data.append((_data_list[i][0], _data_list[i][1] + _transformer[i][1]))
+
+    return c_data

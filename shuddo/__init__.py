@@ -7,6 +7,9 @@ from .filters import S_filter_data
 from .filters import S_uniform_spread
 from .filters import S_smooth_data
 from .filters import S_adjust_phase
+from .filters import S_scale_data
+from .filters import S_shift_data
+from .filters import S_convolute_data
 from .mining import S_get_peak
 from .mining import S_get_all_peaks
 from .mining import S_is_neighbour
