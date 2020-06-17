@@ -257,3 +257,17 @@ def S_convolute_data(_data_list, _transformer):
         c_data.append((_data_list[i][0], _data_list[i][1] + _transformer[i][1]))
 
     return c_data
+
+def S_invert_data(_data_list):
+    """
+    returns data samples where y axis values are inverted
+    """
+
+    i_data = []
+    ds = len(_data_list)
+
+    for i in range(ds):
+        i_data.append((_data_list[i][0], -1*_data_list[i][1]))
+
+    return i_data
+
