@@ -208,3 +208,26 @@ def S_get_histogram(_data_list, _level=0.1):
 
     return list(zip(averages, counts))
 
+def S_check_similarity(_data_lista, _data_listb, _band=0.1, _tolerance=5):
+    """
+    Checks if two data sets are similar when samples are aligned
+    Band determines difference in values and tolerance tells number of dissimilar samples to ignore
+    """
+
+    dsa = len(_data_lista)
+    dsb = len(_data_listb)
+
+    tol = 0
+
+    if dsa != dsb:
+        return False
+
+    for i in range(dsa):
+
+        if isclose(_data_lista[i], _data_listb, abs_tol=_band) == False:
+            tol += 1
+
+        if tol >= _tolerance:
+            return False
+
+    return True
