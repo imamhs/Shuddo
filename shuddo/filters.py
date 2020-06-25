@@ -271,3 +271,26 @@ def S_invert_data(_data_list):
 
     return i_data
 
+def S_inverse_data(_data_list, _infinity_value='inf'):
+    """
+    returns data samples where y axis values are inversely proporsional
+    """
+
+    i_data = []
+    ds = len(_data_list)
+
+    for i in range(ds):
+
+        if _data_list[i][1] == 0:
+
+            i_data.append((_data_list[i][0], _infinity_value))
+
+        if _data_list[i][1] == _infinity_value:
+
+            i_data.append((_data_list[i][0], 0.0))
+
+        else:
+
+            i_data.append((_data_list[i][0], 1/_data_list[i][1]))
+
+    return i_data
