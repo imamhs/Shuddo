@@ -231,3 +231,52 @@ def S_check_similarity(_data_lista, _data_listb, _band=0.1, _tolerance=5):
             return False
 
     return True
+
+def S_standard_deviation(_data_list):
+
+    ds = len(_data_list)
+    mean = sum(_data_list)/ds
+    average_spread = 0
+
+    for i in _data_list:
+        average_spread += (i - mean)**2
+
+    average_spread = average_spread / ds
+
+    return (average_spread)**(1/2)
+
+def S_proximity(_data_list, _percent_similarity=0.95):
+    """
+    Calculates average of smallest distances between data points when samples are translated to positive values
+    Percent similarity is used for determining closeness between data points
+    Returns smallest distances along X and Y axes
+    """
+
+    x_val, y_val = list(zip(*_data_list))
+    
+    x_val = sorted(x_val)
+    y_val = sorted(y_val)
+
+    x_diffs = []
+    y_diffs = []
+
+    ds = len(x_val)
+
+    for i in range(1, ds):
+        x_diff = x_val[i] - x_val[i-1]
+        y_diff = y_val[i] - y_val[i-1] 
+        if x_diff >= _percent_similarity:
+            continue
+        else:
+            x_diffs.append(x_diff)
+
+        if y_diff >= _percent_similarity:
+            continue
+        else:
+            y_diffs.append(y_diff)
+
+
+    x_proximity = sum(x_diffs)/len(x_diffs)
+    y_proximity = sum(y_diffs)/len(y_diffs)
+
+    return (x_proximity, y_proximity)

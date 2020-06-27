@@ -294,3 +294,16 @@ def S_inverse_data(_data_list, _infinity_value='inf'):
             i_data.append((_data_list[i][0], 1/_data_list[i][1]))
 
     return i_data
+
+def S_translate_data(_data_list, _transform_x, _transform_y):
+    """
+    returns data samples where data points are translated by transform amount
+    """
+
+    t_data = []
+    ds = len(_data_list)
+
+    for i in range(ds):
+        t_data.append((_data_list[i][0]+_transform_x, _data_list[i][1]+_transform_y))
+
+    return t_data

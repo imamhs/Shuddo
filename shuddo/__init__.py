@@ -12,6 +12,7 @@ from .filters import S_shift_data
 from .filters import S_convolute_data
 from .filters import S_invert_data
 from .filters import S_inverse_data
+from .filters import S_translate_data
 from .mining import S_get_peak
 from .mining import S_get_all_peaks
 from .mining import S_is_neighbour
@@ -19,3 +20,5 @@ from .mining import S_get_cluster_centroid
 from .mining import S_get_clusters
 from .mining import S_get_histogram
 from .mining import S_check_similarity
+from .mining import S_standard_deviation
+from .mining import S_proximity
