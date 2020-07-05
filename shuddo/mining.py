@@ -278,6 +278,38 @@ def S_count_leftright(_data_list, _value):
 
     return (left_c, right_c)
 
+def S_average_high(_data_list, _percent=0.1):
+    """
+    Returns average of higher value samples where the number of samples to consider is defined by percent
+    1.0 equals all samples, 0.2 equals 20 percent of samples from a data set
+    """
+
+    if _percent > 1.0 or _percent < 0.1:
+        return None
+
+    vals = sorted(_data_list)
+    ds = len(vals)
+    i = floor(ds * (1-_percent))
+    samples = vals[i-ds:ds]
+    samples_len = len(samples)
+    return sum(samples)/samples_len
+
+def S_average_low(_data_list, _percent=0.5):
+    """
+    Returns average of lower value samples where the number of samples to consider is defined by percent
+    1.0 equals all samples, 0.2 equals 20 percent of samples from a data set
+    """
+
+    if _percent > 1.0 or _percent < 0.1:
+        return None
+
+    vals = sorted(_data_list)
+    ds = len(vals)
+    i = floor(ds * _percent)
+    samples = vals[:i]
+    samples_len = len(samples)
+    return sum(samples)/samples_len
+
 def S_proximity(_data_list, _percent_similarity=0.95):
     """
     Calculates average of smallest distances between data points when samples are translated to positive values
