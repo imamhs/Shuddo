@@ -21,4 +21,6 @@ from .mining import S_get_clusters
 from .mining import S_get_histogram
 from .mining import S_check_similarity
 from .mining import S_standard_deviation
+from .mining import S_median_sample
+from .mining import S_count_leftright
 from .mining import S_proximity

@@ -5,7 +5,7 @@
 Data mining functions
 """
 
-from math import isclose, hypot, pi
+from math import isclose, hypot, pi, floor
 
 def S_get_peak(_data_list, _cursor=0, _base_line=0):
     """
@@ -244,6 +244,39 @@ def S_standard_deviation(_data_list):
     average_spread = average_spread / ds
 
     return (average_spread)**(1/2)
+
+def S_median_sample(_data_list):
+    """
+    Returns middle value from data set and its location
+    """
+
+    vals = sorted(_data_list)
+    ds = len(vals)
+    i = floor(ds / 2)
+
+    if ds%2 == 1:
+        return (i+1, vals[i])
+    else:
+        return ((i+0.5),((vals[i-1] + vals[i])/2))
+
+
+def S_count_leftright(_data_list, _value):
+    """
+    Returns the number of samples to the left and the right of a sample from a data set as expressed by value
+    """
+
+    vals = sorted(_data_list)
+    left_c = 0
+    right_c = 0
+
+    for i in vals:
+
+        if _value > i:
+            left_c += 1
+        else:
+            right_c += 1
+
+    return (left_c, right_c)
 
 def S_proximity(_data_list, _percent_similarity=0.95):
     """
