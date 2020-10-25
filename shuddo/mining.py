@@ -345,3 +345,10 @@ def S_proximity(_data_list, _percent_similarity=0.95):
     y_proximity = sum(y_diffs)/len(y_diffs)
 
     return (x_proximity, y_proximity)
+
+def S_find_range(_data_list):
+    """
+    Returns smallest and largest values in the one dimensional dataset
+    """
+    return (min(_data_list), max(_data_list))
+

@@ -307,3 +307,17 @@ def S_translate_data(_data_list, _transform_x, _transform_y):
         t_data.append((_data_list[i][0]+_transform_x, _data_list[i][1]+_transform_y))
 
     return t_data
+
+def S_translate_to_positive_axis(_data_list):
+    """
+    returns data samples where data points are translated to positive X and Y axes
+    """
+
+    x_val, y_val = list(zip(*_data_list))
+
+    x_transform = abs(min(x_val))
+    y_transform = abs(min(y_val))
+
+    return S_translate_data(_data_list, x_transform, y_transform)
+
+
