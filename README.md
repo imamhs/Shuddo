@@ -1,5 +1,4 @@
-
-Shuddo (A data processing and analysing library for Python)
+#Shuddo (A data processing and analysing library for Python)
 
 I was hoping to make an efficient and smart data processing library in Python for Engineers. Hopefully, I would create and add more and more functions for everyone to benefit from. I made everything from scratch based on my fundamental knowledge and observations in data. See some examples below :)
 
@@ -10,7 +9,7 @@ I was hoping to make an efficient and smart data processing library in Python fo
 
 To use, just include shuddo directory into your project.
 
-For usages and applications restrictions please refer to LICENSE.txt
+*For usages and applications restrictions please refer to LICENSE.txt*
 
 Cheers!
 
