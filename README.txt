@@ -7,8 +7,6 @@ I was hoping to make an efficient and smart data processing library in Python fo
 
 Please look at examples for more details.
 
-![Image of Yaktocat](https://octodex.github.com/images/yaktocat.png)
-
 To use, just include shuddo directory into your project.
 
 For usages and applications restrictions please refer to LICENSE.txt
