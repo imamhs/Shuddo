@@ -13,4 +13,6 @@ For usages and applications restrictions please refer to LICENSE.txt
 
 Cheers!
 
+https://github.com/imamhs/Shuddo/blob/Up/Moving%20average%20filter%20in%20action.png?raw=true
+
 Md Imam Hossain (emamhd@gmail.com)
