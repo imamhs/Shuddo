@@ -22,6 +22,7 @@ from .mining import S_get_cluster_radius
 from .mining import S_get_clusters
 from .mining import S_get_histogram
 from .mining import S_check_similarity
+from .mining import S_variance
 from .mining import S_standard_deviation
 from .mining import S_median_sample
 from .mining import S_count_leftright
@@ -29,3 +30,4 @@ from .mining import S_average_high
 from .mining import S_average_low
 from .mining import S_proximity
 from .mining import S_find_range
+from .mining import S_covariance

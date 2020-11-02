@@ -95,7 +95,7 @@ def S_get_all_peaks(_data_list, _level=0.5, _step=1):
 
 def S_is_neighbour(_data_list, _sample, _similarity=0.8):
     """
-    Checks if provided a sample is in close proximity for a given data samples
+    Checks if provided sample is in close proximity for a given data samples
     """
 
     ds = len(_data_list)
@@ -232,7 +232,7 @@ def S_check_similarity(_data_lista, _data_listb, _band=0.1, _tolerance=5):
 
     return True
 
-def S_standard_deviation(_data_list):
+def S_variance(_data_list):
 
     ds = len(_data_list)
     mean = sum(_data_list)/ds
@@ -243,7 +243,11 @@ def S_standard_deviation(_data_list):
 
     average_spread = average_spread / ds
 
-    return (average_spread)**(1/2)
+    return average_spread
+
+def S_standard_deviation(_data_list):
+
+    return (S_variance(_data_list))**(1/2)
 
 def S_median_sample(_data_list):
     """
@@ -352,3 +356,19 @@ def S_find_range(_data_list):
     """
     return (min(_data_list), max(_data_list))
 
+def S_covariance(_data_list):
+    """
+    Returns covariance of two dimensional data samples
+    """
+
+    ds = len(_data_list)
+
+    cv = 0
+
+    if ds > 0:
+        for i in _data_list:
+            cv += (i[0] * i[1])
+
+        return (cv/ds)
+    else:
+        return None
