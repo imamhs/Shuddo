@@ -51,9 +51,10 @@ def S_get_peak(_data_list, _cursor=0, _base_line=0):
         return (peak_value, _cursor + (peak_width/2), peak_width, peak_start_location, cursor)
         
         
-def S_get_all_peaks(_data_list, _level=0.5, _step=1):
+def S_get_all_peaks(_data_list, _level=0.5, _step=1, _valley=False):
     """
-    Returns all the peaks available in the data based on height differences between points next to each other as set by level, step defines number of points to skip for checking the level difference
+    Returns all the peaks available in the data based on height differences between points next to each
+    other as set by level where step defines the number of points to skip for checking the level difference.
     """
 
     ds = len(_data_list)
@@ -68,26 +69,50 @@ def S_get_all_peaks(_data_list, _level=0.5, _step=1):
 
         level_change = _data_list[cursor + _step] - _data_list[cursor]
 
-        if level_change > _level and peak_start_location == -1:
-            peak_start_location = cursor
-        elif level_change < 0 and peak_end_location == -1 and peak_start_location >= 0:
-            peak_end_location = cursor
+        if _valley == False:
+            if level_change > _level and peak_start_location == -1:
+                peak_start_location = cursor
+            elif level_change < 0 and peak_end_location == -1 and peak_start_location >= 0:
+                peak_end_location = cursor
+        else:
+            if level_change < _level and peak_start_location == -1:
+                peak_start_location = cursor
+            elif level_change > 0 and peak_end_location == -1 and peak_start_location >= 0:
+                peak_end_location = cursor
 
         if peak_start_location >= 0:
             data_point.append(_data_list[cursor])
 
-        if peak_start_location >= 0 and peak_end_location >= 0:
-            if len(data_point) > 2:
-                half_width = (peak_end_location - peak_start_location)
-                peak_width = half_width * 2
-                peak_location = peak_end_location
-                peak_valley = min(data_point)
-                peak_value = max(data_point)
-                peak_height = abs(peak_value - peak_valley)
-                peaks.append((peak_value, peak_location, peak_width, peak_height, peak_start_location))
-                data_point.clear()
-                peak_start_location = -1
-                peak_end_location = -1
+        if _valley == False:
+
+            if peak_start_location >= 0 and peak_end_location >= 0:
+                if len(data_point) > 2:
+                    half_width = (peak_end_location - peak_start_location)
+                    peak_width = half_width * 2
+                    peak_location = peak_end_location
+                    peak_valley = min(data_point)
+                    peak_value = max(data_point)
+                    peak_height = abs(peak_value - peak_valley)
+                    peaks.append((peak_value, peak_location, peak_width, peak_height, peak_start_location))
+                    data_point.clear()
+                    peak_start_location = -1
+                    peak_end_location = -1
+
+        else:
+
+            if peak_start_location >= 0 and peak_end_location >= 0:
+                if len(data_point) > 2:
+                    half_width = (peak_end_location - peak_start_location)
+                    peak_width = half_width * 2
+                    peak_location = peak_end_location
+                    peak_valley = max(data_point)
+                    peak_value = min(data_point)
+                    peak_height = abs(peak_value - peak_valley)
+                    peaks.append((peak_value, peak_location, peak_width, peak_height, peak_start_location))
+                    data_point.clear()
+                    peak_start_location = -1
+                    peak_end_location = -1
+
 
         cursor += _step
     
@@ -95,7 +120,7 @@ def S_get_all_peaks(_data_list, _level=0.5, _step=1):
 
 def S_is_neighbour(_data_list, _sample, _similarity=0.8):
     """
-    Checks if provided sample is in close proximity for a given data samples
+    Checks if provided sample is in close proximity for a given data samples.
     """
 
     ds = len(_data_list)
@@ -118,7 +143,7 @@ def S_is_neighbour(_data_list, _sample, _similarity=0.8):
 
 def S_get_cluster_centroid(_data_list):
     """
-    Finds the centroid of a given two dimensional data samples cluster
+    Finds the centroid of a given two dimensional data samples cluster.
     """
     ds = len(_data_list)
 
@@ -132,7 +157,7 @@ def S_get_cluster_centroid(_data_list):
 
 def S_get_cluster_radius(_data_list, _center):
     """
-    Finds the radius of a given two dimensional data samples cluster
+    Finds the radius of a given two dimensional data samples cluster.
     """
 
     ds = len(_data_list)
@@ -148,7 +173,7 @@ def S_get_cluster_radius(_data_list, _center):
 
 def S_get_clusters(_data_list, _similarity=0.8):
     """
-    Finds the clusters present for given two dimensional scattered data samples
+    Finds the clusters present for given two dimensional scattered data samples.
     """
 
     clusters = []
@@ -176,8 +201,8 @@ def S_get_clusters(_data_list, _similarity=0.8):
 
 def S_get_histogram(_data_list, _level=0.1):
     """
-    Finds the groups present for given data samples
-    Groups will be divided based on value difference as set by level
+    Finds the groups present for given data samples.
+    Groups will be divided based on value difference as set by level.
     """
 
     s_data = sorted(_data_list)
@@ -210,8 +235,8 @@ def S_get_histogram(_data_list, _level=0.1):
 
 def S_check_similarity(_data_lista, _data_listb, _band=0.1, _tolerance=5):
     """
-    Checks if two data sets are similar when samples are aligned
-    Band determines difference in values and tolerance tells number of dissimilar samples to ignore
+    Checks if two data sets are similar when samples are aligned.
+    Band determines difference in values and tolerance tells number of dissimilar samples to ignore.
     """
 
     dsa = len(_data_lista)
@@ -251,7 +276,7 @@ def S_standard_deviation(_data_list):
 
 def S_median_sample(_data_list):
     """
-    Returns middle value from data set and its location
+    Returns middle value from data set and its location.
     """
 
     vals = sorted(_data_list)
@@ -266,7 +291,7 @@ def S_median_sample(_data_list):
 
 def S_count_leftright(_data_list, _value):
     """
-    Returns the number of samples to the left and the right of a sample from a data set as expressed by value
+    Returns the number of samples to the left and the right of a sample from a data set as expressed by value.
     """
 
     vals = sorted(_data_list)
@@ -284,8 +309,8 @@ def S_count_leftright(_data_list, _value):
 
 def S_average_high(_data_list, _percent=0.1):
     """
-    Returns average of higher value samples where the number of samples to consider is defined by percent
-    1.0 equals all samples, 0.2 equals 20 percent of samples from a data set
+    Returns average of higher value samples where the number of samples to consider is defined by percent.
+    1.0 equals all samples, 0.2 equals 20 percent of samples from a data set.
     """
 
     if _percent > 1.0 or _percent < 0.1:
@@ -300,8 +325,8 @@ def S_average_high(_data_list, _percent=0.1):
 
 def S_average_low(_data_list, _percent=0.5):
     """
-    Returns average of lower value samples where the number of samples to consider is defined by percent
-    1.0 equals all samples, 0.2 equals 20 percent of samples from a data set
+    Returns average of lower value samples where the number of samples to consider is defined by percent.
+    1.0 equals all samples, 0.2 equals 20 percent of samples from a data set.
     """
 
     if _percent > 1.0 or _percent < 0.1:
@@ -316,9 +341,9 @@ def S_average_low(_data_list, _percent=0.5):
 
 def S_proximity(_data_list, _percent_similarity=0.95):
     """
-    Calculates average of smallest distances between data points when samples are translated to positive values
-    Percent similarity is used for determining closeness between data points
-    Returns smallest distances along X and Y axes
+    Calculates average of smallest distances between data points when samples are translated to positive values.
+    Percent similarity is used for determining closeness between data points.
+    Returns smallest distances along X and Y axes.
     """
 
     x_val, y_val = list(zip(*_data_list))
@@ -352,13 +377,13 @@ def S_proximity(_data_list, _percent_similarity=0.95):
 
 def S_find_range(_data_list):
     """
-    Returns smallest and largest values in the one dimensional dataset
+    Returns smallest and largest values in the one dimensional dataset.
     """
     return (min(_data_list), max(_data_list))
 
 def S_covariance(_data_list):
     """
-    Returns covariance of two dimensional data samples
+    Returns covariance of two dimensional data samples.
     """
 
     ds = len(_data_list)

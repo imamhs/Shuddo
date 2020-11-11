@@ -3,7 +3,7 @@ from .filters import S_downsample
 from .filters import S_linear_function
 from .filters import S_upsample
 from .filters import S_cosine_function
-from .filters import S_filter_data
+from .filters import S_crop_data
 from .filters import S_uniform_spread
 from .filters import S_smooth_data
 from .filters import S_adjust_phase
@@ -14,6 +14,7 @@ from .filters import S_invert_data
 from .filters import S_inverse_data
 from .filters import S_translate_data
 from .filters import S_translate_to_positive_axis
+from .filters import S_envelope_filter
 from .mining import S_get_peak
 from .mining import S_get_all_peaks
 from .mining import S_is_neighbour

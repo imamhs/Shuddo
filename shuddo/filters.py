@@ -6,11 +6,12 @@ Data filtering functions
 """
 
 from math import pi, cos
+from shuddo import mining
 
 def S_moving_average_data(_data_list, _smoothing=1):
     """
     Returns moving average data without data lag.
-    Use the smoothing factor to get required overall smoothing
+    Use the smoothing factor to get required overall smoothing.
     """    
 
     ma_data = []    
@@ -38,7 +39,7 @@ def S_moving_average_data(_data_list, _smoothing=1):
 def S_downsample(_data_list, _factor=1):
     """
     Returns a two dimensional data set with a reduced number of samples.
-    Use the sample skipping factor to get required result, the factor tells how many samples to skip for one data sample
+    Use the sample skipping factor to get required result, the factor tells how many samples to skip for one data sample.
     """
 
     ds_data = []
@@ -80,7 +81,7 @@ def S_linear_function(_point1, _point2, _npoints):
 def S_upsample(_data_list, _factor=1, _smooth=False):
     """
     Returns a two dimensional data set with an increased number of samples.
-    The factor tells how many samples to add for one data sample where the smooth is to use smooth cosine interpolation for added samples
+    The factor tells how many samples to add for one data sample where the smooth is to use smooth cosine interpolation for added samples.
     """
 
     ds_data = []
@@ -128,9 +129,9 @@ def S_cosine_function(_point1, _point2, _npoints):
 
     return points
 
-def S_filter_data(_data_list, _max, _min):
+def S_crop_data(_data_list, _max, _min):
     """
-    returns a filtered data where values are discarded according to max, min limits
+    Returns a filtered data where values are discarded according to max, min limits.
     """
 
     f_data = []
@@ -153,7 +154,7 @@ def S_filter_data(_data_list, _max, _min):
 
 def S_uniform_spread(_data_list, _nsamples):
     """
-    returns a uniformly spread data samples where samples size is fixed by nsamples
+    Returns a uniformly spread data samples where samples size is fixed by nsamples.
     """
     u_data = []
 
@@ -184,7 +185,7 @@ def S_uniform_spread(_data_list, _nsamples):
 
 def S_smooth_data(_data_list, _smoothing=1):
     """
-    returns data samples with smooth profiles applied in between the sample points
+    Returns data samples with smooth profiles applied in between the sample points.
     """
 
     s_data = []
@@ -204,7 +205,7 @@ def S_smooth_data(_data_list, _smoothing=1):
 
 def S_adjust_phase(_data_list, _transform):
     """
-    returns data samples where the phase is moved by transform amount
+    Returns data samples where the phase is moved by transform amount.
     """
 
     a_data = []
@@ -217,7 +218,7 @@ def S_adjust_phase(_data_list, _transform):
 
 def S_scale_data(_data_list, _factor):
     """
-    returns data samples where y axis values are scaled by the factor
+    Returns data samples where y axis values are scaled by the factor.
     """
 
     s_data = []
@@ -230,7 +231,7 @@ def S_scale_data(_data_list, _factor):
 
 def S_shift_data(_data_list, _transform):
     """
-    returns data samples where y axis values are translated by transform amount
+    Returns data samples where y axis values are translated by transform amount.
     """
 
     s_data = []
@@ -243,7 +244,7 @@ def S_shift_data(_data_list, _transform):
 
 def S_convolute_data(_data_list, _transformer):
     """
-    returns new data samples where y axis values are transformed by transformer y axis values
+    Returns new data samples where y axis values are transformed by transformer y axis values.
     """
 
     c_data = []
@@ -260,7 +261,7 @@ def S_convolute_data(_data_list, _transformer):
 
 def S_invert_data(_data_list):
     """
-    returns data samples where y axis values are inverted
+    Returns data samples where y axis values are inverted.
     """
 
     i_data = []
@@ -273,7 +274,7 @@ def S_invert_data(_data_list):
 
 def S_inverse_data(_data_list, _infinity_value='inf'):
     """
-    returns data samples where y axis values are inversely proporsional
+    Returns data samples where y axis values are inversely proporsional.
     """
 
     i_data = []
@@ -297,7 +298,7 @@ def S_inverse_data(_data_list, _infinity_value='inf'):
 
 def S_translate_data(_data_list, _transform_x, _transform_y):
     """
-    returns data samples where data points are translated by transform amount
+    Returns data samples where data points are translated by transform amount.
     """
 
     t_data = []
@@ -310,7 +311,7 @@ def S_translate_data(_data_list, _transform_x, _transform_y):
 
 def S_translate_to_positive_axis(_data_list):
     """
-    returns data samples where data points are translated to positive X and Y axes
+    Returns data samples where data points are translated to positive X and Y axes.
     """
 
     x_val, y_val = list(zip(*_data_list))
@@ -320,4 +321,23 @@ def S_translate_to_positive_axis(_data_list):
 
     return S_translate_data(_data_list, x_transform, y_transform)
 
+def S_envelope_filter(_data_list, _upper=True, _level=0.001, _step=1):
+    """
+    Returns the envelope of data samples.
+    Use the level parameter to tweak envelope detection and set upper to False to get lower envelope.
+    """
 
+    peaks = mining.S_get_all_peaks(_data_list, _level=_level, _step=_step, _valley=not _upper)
+
+    ds_data = []
+
+    for i in range(0, len(peaks)-1):
+        samples = S_linear_function((peaks[i][1], peaks[i][0]), (peaks[i+1][1], peaks[i+1][0]),  peaks[i+1][1]- peaks[i][1])
+        for j in range(len(samples)):
+            ds_data.append(samples[j][1])
+
+    samples = S_linear_function((peaks[-2][1], peaks[-2][0]), (peaks[-1][1], peaks[-1][0]), peaks[-1][1] - peaks[-2][1])
+    for j in range(len(samples)):
+        ds_data.append(samples[j][1])
+
+    return ds_data
