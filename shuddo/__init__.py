@@ -8,6 +8,7 @@ from .filters import S_uniform_spread
 from .filters import S_smooth_data
 from .filters import S_adjust_phase
 from .filters import S_scale_data
+from .filters import S_change_amplitude
 from .filters import S_shift_data
 from .filters import S_convolute_data
 from .filters import S_invert_data
@@ -15,6 +16,7 @@ from .filters import S_inverse_data
 from .filters import S_translate_data
 from .filters import S_translate_to_positive_axis
 from .filters import S_envelope_filter
+from .mining import S_get_peaks_valleys
 from .mining import S_get_peak
 from .mining import S_get_all_peaks
 from .mining import S_is_neighbour

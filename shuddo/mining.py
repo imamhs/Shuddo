@@ -7,6 +7,31 @@ Data mining functions
 
 from math import isclose, hypot, pi, floor
 
+def S_get_peaks_valleys(_data_list):
+    """
+    Returns all the peaks and valleys present in the data samples
+    """
+
+    ds = len(_data_list)
+
+    peaksvalleys = []
+
+    dirup = True
+
+    for i in range(0, ds-1):
+        diff = _data_list[i+1] - _data_list[i]
+        if diff > 0:
+            if dirup == False:
+                peaksvalleys.append((_data_list[i], i))
+            dirup = True
+        elif diff < 0:
+            if dirup == True:
+                peaksvalleys.append((_data_list[i], i))
+            dirup = False
+
+    return peaksvalleys
+
+
 def S_get_peak(_data_list, _cursor=0, _base_line=0):
     """
     Returns the features of a first positive or negative peak from the data, define horizontal separation for the peak detection by setting the base line, define detection starting location by setting the cursor

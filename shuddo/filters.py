@@ -229,6 +229,35 @@ def S_scale_data(_data_list, _factor):
 
     return s_data
 
+def S_change_amplitude(_data_list, _amount):
+    """
+    Returns data samples where y axis values are either increased or decreased by the amount.
+    """
+
+    s_data = []
+    ds = len(_data_list)
+
+    amount = abs(_amount)
+
+
+    for i in range(ds):
+        if _amount > 0:
+            if _data_list[i][1] == 0:
+                s_data.append((_data_list[i][0], _data_list[i][1]))
+            elif _data_list[i][1] > 0:
+                s_data.append((_data_list[i][0], _data_list[i][1] + amount))
+            elif _data_list[i][1] < 0:
+                s_data.append((_data_list[i][0], _data_list[i][1] - amount))
+        elif _amount < 0:
+            if _data_list[i][1] == 0:
+                s_data.append((_data_list[i][0], _data_list[i][1]))
+            elif _data_list[i][1] > 0:
+                s_data.append((_data_list[i][0], _data_list[i][1] - amount))
+            elif _data_list[i][1] < 0:
+                s_data.append((_data_list[i][0], _data_list[i][1] + amount))
+
+    return s_data
+
 def S_shift_data(_data_list, _transform):
     """
     Returns data samples where y axis values are translated by transform amount.
