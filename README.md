@@ -4,6 +4,7 @@ I was hoping to make an efficient and smart data processing library in Python fo
 
 ![Moving average filter](Moving%20average%20filter%20in%20action.png)
 ![Peaks finding](Peaks%20detection%20data%20mining%20in%20action.png)
+![Peaks finding](Graphic%20window%20number%200.png)
 ![Clusters finding](Cluster%20detection%20data%20mining%20in%20action.png)
 
 
