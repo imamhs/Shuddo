@@ -227,7 +227,7 @@ def S_scale_data(_data_list, _factor):
     ds = len(_data_list)
 
     for i in range(ds):
-        s_data.append((_data_list[i][0], _data_list[i][1]*_factor))
+        s_data.append(_data_list[i]*_factor)
 
     return s_data
 
@@ -275,7 +275,7 @@ def S_shift_data(_data_list, _transform):
 
 def S_convolute_data(_data_list, _transformer):
     """
-    Returns new data samples where y axis values are transformed by transformer y axis values.
+    Returns new data samples where y axis values are transformed by transformer values.
     """
 
     c_data = []
@@ -286,7 +286,7 @@ def S_convolute_data(_data_list, _transformer):
         return []
 
     for i in range(ds):
-        c_data.append((_data_list[i][0], _data_list[i][1] + _transformer[i][1]))
+        c_data.append((_data_list[i][0], _data_list[i][1] + _transformer[i]))
 
     return c_data
 
@@ -299,7 +299,7 @@ def S_invert_data(_data_list):
     ds = len(_data_list)
 
     for i in range(ds):
-        i_data.append((_data_list[i][0], -1*_data_list[i][1]))
+        i_data.append(-1*_data_list[i])
 
     return i_data
 
@@ -313,17 +313,17 @@ def S_inverse_data(_data_list, _infinity_value='inf'):
 
     for i in range(ds):
 
-        if _data_list[i][1] == 0:
+        if _data_list[i] == 0:
 
-            i_data.append((_data_list[i][0], _infinity_value))
+            i_data.append(_infinity_value)
 
-        if _data_list[i][1] == _infinity_value:
+        if _data_list[i] == _infinity_value:
 
-            i_data.append((_data_list[i][0], 0.0))
+            i_data.append(0.0)
 
         else:
 
-            i_data.append((_data_list[i][0], 1/_data_list[i][1]))
+            i_data.append(1/_data_list[i])
 
     return i_data
 
