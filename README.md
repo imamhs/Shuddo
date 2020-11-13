@@ -2,11 +2,11 @@
 
 I was hoping to make an efficient and smart data processing library in Python for Engineers. Hopefully, I would create and add more and more functions for everyone to benefit from. I made everything from scratch based on my fundamental knowledge and observations in data. See some examples below :)
 
-![Moving average filter](Moving%20average%20filter%20in%20action.png)
-![Peaks finding](Peaks%20detection%20data%20mining%20in%20action.png)
-![Peaks finding1](Peaks%20by%20baseline.png)
-![envelope](envelope_detection.png)
-![Clusters finding](Cluster%20detection%20data%20mining%20in%20action.png)
+![Data cleaning](examples/clean_data.png)
+![Height values](examples/high.png)
+![High Low values](examples/highlow1.png)
+![Boundary detection](examples/boundary.png)
+![Groups finding](examples/groups_finding.png)
 
 
 To use, just include shuddo directory into your project.
