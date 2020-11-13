@@ -28,7 +28,9 @@ def S_moving_average_data(_data_list, _smoothing=1):
             ma_data.append(sum(db)/nfc)
         elif i >= fc:
             if i < (ds - fc):
-                ma_data.append(sum(_data_list[i-fc:i+fc+1])/(fmas+1))
+                db = _data_list[i-fc:i+fc+1]
+                nfc = fmas+1
+                ma_data.append(sum(db)/nfc)
             else:
                 db = _data_list[i-(ds-i-1):]
                 nfc = len(db)
@@ -231,7 +233,7 @@ def S_scale_data(_data_list, _factor):
 
 def S_change_amplitude(_data_list, _amount):
     """
-    Returns data samples where y axis values are either increased or decreased by the amount.
+    Returns data samples where values are either increased or decreased by the amount.
     """
 
     s_data = []
@@ -242,19 +244,19 @@ def S_change_amplitude(_data_list, _amount):
 
     for i in range(ds):
         if _amount > 0:
-            if _data_list[i][1] == 0:
-                s_data.append((_data_list[i][0], _data_list[i][1]))
-            elif _data_list[i][1] > 0:
-                s_data.append((_data_list[i][0], _data_list[i][1] + amount))
-            elif _data_list[i][1] < 0:
-                s_data.append((_data_list[i][0], _data_list[i][1] - amount))
+            if _data_list[i] == 0:
+                s_data.append(_data_list[i])
+            elif _data_list[i] > 0:
+                s_data.append(_data_list[i] + amount)
+            elif _data_list[i] < 0:
+                s_data.append(_data_list[i] - amount)
         elif _amount < 0:
-            if _data_list[i][1] == 0:
-                s_data.append((_data_list[i][0], _data_list[i][1]))
-            elif _data_list[i][1] > 0:
-                s_data.append((_data_list[i][0], _data_list[i][1] - amount))
-            elif _data_list[i][1] < 0:
-                s_data.append((_data_list[i][0], _data_list[i][1] + amount))
+            if _data_list[i] == 0:
+                s_data.append(_data_list[i])
+            elif _data_list[i] > 0:
+                s_data.append(_data_list[i] - amount)
+            elif _data_list[i] < 0:
+                s_data.append(_data_list[i] + amount)
 
     return s_data
 
@@ -358,15 +360,68 @@ def S_envelope_filter(_data_list, _upper=True, _level=0.001, _step=1):
 
     peaks = mining.S_get_all_peaks(_data_list, _level=_level, _step=_step, _valley=not _upper)
 
-    ds_data = []
+    e_data = []
 
     for i in range(0, len(peaks)-1):
         samples = S_linear_function((peaks[i][1], peaks[i][0]), (peaks[i+1][1], peaks[i+1][0]),  peaks[i+1][1]- peaks[i][1])
         for j in range(len(samples)):
-            ds_data.append(samples[j][1])
+            e_data.append(samples[j][1])
 
     samples = S_linear_function((peaks[-2][1], peaks[-2][0]), (peaks[-1][1], peaks[-1][0]), peaks[-1][1] - peaks[-2][1])
     for j in range(len(samples)):
-        ds_data.append(samples[j][1])
+        e_data.append(samples[j][1])
 
-    return ds_data
+    return e_data
+
+
+def S_envelope_approximate_filter(_data_list, _smoothing=1, _upper=True):
+    """
+    Returns the envelope of data samples by combining standard deviation to moving average data.
+    Use the smoothing parameter to tweak envelope amplitude.
+    """
+
+    ea_data = []
+    ds = len(_data_list)
+    s = _smoothing
+    mas = int((ds * 0.02) * s)
+    fc = int(mas / 2)
+    fmas = fc * 2
+
+    for i in range(ds):
+        if i < fc:
+            db = _data_list[:i + i + 1]
+            nfc = len(db)
+            ma = sum(db) / nfc
+            sd = mining.S_standard_deviation(db)
+            if _data_list[i] > 0:
+                ea_data.append(ma+sd)
+            elif _data_list[i] < 0:
+                ea_data.append(ma - sd)
+            else:
+                ea_data.append(ma)
+
+        elif i >= fc:
+            if i < (ds - fc):
+                db = _data_list[i - fc:i + fc + 1]
+                nfc = fmas + 1
+                ma = sum(db) / nfc
+                sd = mining.S_standard_deviation(db)
+                if _data_list[i] > 0:
+                    ea_data.append(ma + sd)
+                elif _data_list[i] < 0:
+                    ea_data.append(ma - sd)
+                else:
+                    ea_data.append(ma)
+            else:
+                db = _data_list[i - (ds - i - 1):]
+                nfc = len(db)
+                ma = sum(db) / nfc
+                sd = mining.S_standard_deviation(db)
+                if _data_list[i] > 0:
+                    ea_data.append(ma + sd)
+                elif _data_list[i] < 0:
+                    ea_data.append(ma - sd)
+                else:
+                    ea_data.append(ma)
+
+    return ea_data
