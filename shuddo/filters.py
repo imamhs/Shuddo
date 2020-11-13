@@ -244,19 +244,19 @@ def S_change_amplitude(_data_list, _amount):
 
     for i in range(ds):
         if _amount > 0:
-            if _data_list[i] == 0:
-                s_data.append(_data_list[i])
-            elif _data_list[i] > 0:
+            if _data_list[i] > 0:
                 s_data.append(_data_list[i] + amount)
             elif _data_list[i] < 0:
                 s_data.append(_data_list[i] - amount)
+            else:
+                s_data.append(_data_list[i])
         elif _amount < 0:
-            if _data_list[i] == 0:
-                s_data.append(_data_list[i])
-            elif _data_list[i] > 0:
+            if _data_list[i] > 0:
                 s_data.append(_data_list[i] - amount)
             elif _data_list[i] < 0:
                 s_data.append(_data_list[i] + amount)
+            else:
+                s_data.append(_data_list[i])
 
     return s_data
 
@@ -394,9 +394,15 @@ def S_envelope_approximate_filter(_data_list, _smoothing=1, _upper=True):
             ma = sum(db) / nfc
             sd = mining.S_standard_deviation(db)
             if _data_list[i] > 0:
-                ea_data.append(ma+sd)
+                if _upper == True:
+                    ea_data.append(ma+sd)
+                else:
+                    ea_data.append(ma-sd)
             elif _data_list[i] < 0:
-                ea_data.append(ma - sd)
+                if _upper == True:
+                    ea_data.append(ma-sd)
+                else:
+                    ea_data.append(ma+sd)
             else:
                 ea_data.append(ma)
 
@@ -407,9 +413,15 @@ def S_envelope_approximate_filter(_data_list, _smoothing=1, _upper=True):
                 ma = sum(db) / nfc
                 sd = mining.S_standard_deviation(db)
                 if _data_list[i] > 0:
-                    ea_data.append(ma + sd)
+                    if _upper == True:
+                        ea_data.append(ma + sd)
+                    else:
+                        ea_data.append(ma - sd)
                 elif _data_list[i] < 0:
-                    ea_data.append(ma - sd)
+                    if _upper == True:
+                        ea_data.append(ma - sd)
+                    else:
+                        ea_data.append(ma + sd)
                 else:
                     ea_data.append(ma)
             else:
@@ -418,9 +430,15 @@ def S_envelope_approximate_filter(_data_list, _smoothing=1, _upper=True):
                 ma = sum(db) / nfc
                 sd = mining.S_standard_deviation(db)
                 if _data_list[i] > 0:
-                    ea_data.append(ma + sd)
+                    if _upper == True:
+                        ea_data.append(ma + sd)
+                    else:
+                        ea_data.append(ma - sd)
                 elif _data_list[i] < 0:
-                    ea_data.append(ma - sd)
+                    if _upper == True:
+                        ea_data.append(ma - sd)
+                    else:
+                        ea_data.append(ma + sd)
                 else:
                     ea_data.append(ma)
 
