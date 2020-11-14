@@ -443,3 +443,50 @@ def S_envelope_approximate_filter(_data_list, _smoothing=1, _upper=True):
                     ea_data.append(ma)
 
     return ea_data
+
+def S_duplicates_filter(_data_list):
+    """
+    Returns data samples where duplicated data samples are replaced by interpolated values.
+    """
+
+    c_data = []
+
+    ds = len(_data_list)
+
+    i_points_s = []
+    i_points_e = []
+
+    sq = mining.S_find_square_floors(_data_list)
+
+    dsq = len(sq)
+
+    for i in sq:
+        if i[1] == ds - 1:
+            i_points_s.append(i[0])
+            i_points_e.append(i[1])
+        else:
+            i_points_s.append(i[0])
+            i_points_e.append(i[1] + 1)
+
+    counter = 0
+
+    while counter < ds:
+
+        if counter in i_points_s:
+            end = i_points_e[i_points_s.index(counter)]
+
+            samples = S_linear_function((counter, _data_list[counter]), (end, _data_list[end]), (end-counter)+1)
+            samples_len = len(samples)
+
+            if end in i_points_s:
+                samples_len -= 1
+
+            for j in range(samples_len):
+                c_data.append(samples[j][1])
+                counter += 1
+        else:
+            c_data.append(_data_list[counter])
+            counter += 1
+
+
+    return c_data
