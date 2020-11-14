@@ -422,3 +422,51 @@ def S_covariance(_data_list):
         return (cv/ds)
     else:
         return None
+
+def S_find_gradients(_data_list):
+    """
+    Returns all gradients from the data samples.
+    """
+
+    g_data = []
+
+    ds = len(_data_list)
+
+    for i in range(1, ds):
+
+        g = _data_list[i] - _data_list[i-1]
+
+        if g != 0:
+            g_data.append((g, i))
+
+    return g_data
+
+def S_find_square_floors(_data_list):
+    """
+    Returns locations of values which do not change.
+    """
+
+    s_data = []
+
+    ds = len(_data_list)
+
+    pd = _data_list[0]
+
+    start = end = -1
+
+    for i in range(1, ds):
+
+        if pd == _data_list[i]:
+            if start == -1:
+                start = i - 1
+            if start != -1 and i == ds-1:
+                s_data.append((start, ds-1))
+        else:
+            if start != -1:
+                end = i - 1
+                s_data.append((start, end))
+                start = end = -1
+
+        pd = _data_list[i]
+
+    return s_data
