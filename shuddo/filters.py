@@ -490,3 +490,24 @@ def S_duplicates_filter(_data_list):
 
 
     return c_data
+
+def S_generate_signal(_data_list):
+    """
+    Returns data samples using data samples interpolation
+    """
+
+    g_data = []
+
+    ds = len(_data_list)
+
+    for i in range(ds-1):
+        samples = S_cosine_function((_data_list[i][0], _data_list[i][1]), (_data_list[i+1][0], _data_list[i+1][1]), (_data_list[i+1][0] - _data_list[i][0]) + 1)
+        samples_len = len(samples)
+
+        for j in range(samples_len-1):
+            g_data.append(samples[j][1])
+
+    return g_data
+
+
+

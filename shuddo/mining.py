@@ -7,14 +7,18 @@ Data mining functions
 
 from math import isclose, hypot, pi, floor
 
-def S_get_peaks_valleys(_data_list):
+def S_get_peaks_valleys(_data_list, _level=0.01, _distance=1):
     """
     Returns all the peaks and valleys present in the data samples
+    The level parameter defines the minimum level change required between consecutive peaks and valleys
+    The distance parameter defines the minimum distance required between consecutive peaks and valleys
     """
 
     ds = len(_data_list)
 
     peaksvalleys = []
+
+    moving_p = (0, 0)
 
     dirup = True
 
@@ -22,11 +26,15 @@ def S_get_peaks_valleys(_data_list):
         diff = _data_list[i+1] - _data_list[i]
         if diff > 0:
             if dirup == False:
-                peaksvalleys.append((_data_list[i], i))
+                if abs(_data_list[i] - moving_p[1]) > _level and abs(i - moving_p[0]) > _distance:
+                    peaksvalleys.append((i, _data_list[i]))
+                    moving_p = (i, _data_list[i])
             dirup = True
         elif diff < 0:
             if dirup == True:
-                peaksvalleys.append((_data_list[i], i))
+                if abs(_data_list[i] - moving_p[1]) > _level and abs(i - moving_p[0]) > _distance:
+                    peaksvalleys.append((i, _data_list[i]))
+                    moving_p = (i, _data_list[i])
             dirup = False
 
     return peaksvalleys
@@ -71,9 +79,9 @@ def S_get_peak(_data_list, _cursor=0, _base_line=0):
         elif _data_list[cursor-1] > _base_line:
             peak_value = max(data_point)
         peak_width = (cursor-1) - peak_start_location
-        return (peak_value, _cursor + (peak_width / 2), peak_width, peak_start_location, cursor-1)
+        return (_cursor + (peak_width / 2), peak_value, peak_width, peak_start_location, cursor-1)
     finally:
-        return (peak_value, _cursor + (peak_width/2), peak_width, peak_start_location, cursor)
+        return (_cursor + (peak_width/2), peak_value, peak_width, peak_start_location, cursor)
         
         
 def S_get_all_peaks(_data_list, _level=0.5, _step=1, _valley=False):
@@ -118,7 +126,7 @@ def S_get_all_peaks(_data_list, _level=0.5, _step=1, _valley=False):
                     peak_valley = min(data_point)
                     peak_value = max(data_point)
                     peak_height = abs(peak_value - peak_valley)
-                    peaks.append((peak_value, peak_location, peak_width, peak_height, peak_start_location))
+                    peaks.append((peak_location, peak_value, peak_width, peak_height, peak_start_location))
                     data_point.clear()
                     peak_start_location = -1
                     peak_end_location = -1
@@ -133,7 +141,7 @@ def S_get_all_peaks(_data_list, _level=0.5, _step=1, _valley=False):
                     peak_valley = max(data_point)
                     peak_value = min(data_point)
                     peak_height = abs(peak_value - peak_valley)
-                    peaks.append((peak_value, peak_location, peak_width, peak_height, peak_start_location))
+                    peaks.append((peak_location, peak_value, peak_width, peak_height, peak_start_location))
                     data_point.clear()
                     peak_start_location = -1
                     peak_end_location = -1
