@@ -475,7 +475,7 @@ def S_duplicates_filter(_data_list):
         if counter in i_points_s:
             end = i_points_e[i_points_s.index(counter)]
 
-            samples = S_linear_function((counter, _data_list[counter]), (end, _data_list[end]), (end-counter)+1)
+            samples = S_cosine_function((counter, _data_list[counter]), (end, _data_list[end]), (end-counter)+1)
             samples_len = len(samples)
 
             if end in i_points_s:
@@ -501,11 +501,11 @@ def S_generate_signal(_data_list):
     ds = len(_data_list)
 
     for i in range(ds-1):
-        samples = S_cosine_function((_data_list[i][0], _data_list[i][1]), (_data_list[i+1][0], _data_list[i+1][1]), (_data_list[i+1][0] - _data_list[i][0]) + 1)
+        samples = S_linear_function((_data_list[i][0], _data_list[i][1]), (_data_list[i+1][0], _data_list[i+1][1]), (_data_list[i+1][0] - _data_list[i][0]) + 1)
         samples_len = len(samples)
 
         for j in range(samples_len-1):
-            g_data.append(samples[j][1])
+            g_data.append((samples[j][0], samples[j][1]))
 
     return g_data
 
