@@ -18,7 +18,8 @@ from .filters import S_translate_to_positive_axis
 from .filters import S_envelope_filter
 from .filters import S_envelope_approximate_filter
 from .filters import S_duplicates_filter
-from .filters import S_generate_signal
+from .filters import S_generate_signal_points
+from .filters import S_generate_triangle_signal
 from .mining import S_get_peaks_valleys
 from .mining import S_get_peak
 from .mining import S_get_all_peaks

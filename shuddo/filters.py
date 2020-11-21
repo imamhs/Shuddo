@@ -262,20 +262,20 @@ def S_change_amplitude(_data_list, _amount):
 
 def S_shift_data(_data_list, _transform):
     """
-    Returns data samples where y axis values are translated by transform amount.
+    Returns data samples where values are translated by transform amount.
     """
 
     s_data = []
     ds = len(_data_list)
 
     for i in range(ds):
-        s_data.append((_data_list[i][0], _data_list[i][1]+_transform))
+        s_data.append(_data_list[i][1]+_transform)
 
     return s_data
 
 def S_convolute_data(_data_list, _transformer):
     """
-    Returns new data samples where y axis values are transformed by transformer values.
+    Returns new data samples where values are transformed by transformer values.
     """
 
     c_data = []
@@ -286,13 +286,13 @@ def S_convolute_data(_data_list, _transformer):
         return []
 
     for i in range(ds):
-        c_data.append((_data_list[i][0], _data_list[i][1] + _transformer[i]))
+        c_data.append(_data_list[i] + _transformer[i])
 
     return c_data
 
 def S_invert_data(_data_list):
     """
-    Returns data samples where y axis values are inverted.
+    Returns data samples where values are inverted.
     """
 
     i_data = []
@@ -305,7 +305,7 @@ def S_invert_data(_data_list):
 
 def S_inverse_data(_data_list, _infinity_value='inf'):
     """
-    Returns data samples where y axis values are inversely proporsional.
+    Returns data samples where values are inversely proporsional.
     """
 
     i_data = []
@@ -491,9 +491,9 @@ def S_duplicates_filter(_data_list):
 
     return c_data
 
-def S_generate_signal(_data_list):
+def S_generate_signal_points(_data_list):
     """
-    Returns data samples using data samples interpolation
+    Returns new data samples by interpolating data samples
     """
 
     g_data = []
@@ -510,4 +510,40 @@ def S_generate_signal(_data_list):
     return g_data
 
 
+def S_generate_triangle_signal(_wave_length, _amplitude, _nwaves):
+    """
+    Returns triangle signal data samples where nwaves defines number of full waves
+    """
 
+    _qspace = 5
+
+    q_length = 0
+
+    if _wave_length > 7:
+        q_length = int(_wave_length / 4) + 1
+    else:
+        q_length = 3
+
+    g_data = []
+
+    for i in range(_nwaves):
+
+        cursor = i*_qspace
+        qq = 2*_qspace
+        qqq = 3*_qspace
+
+        quadrant1 = S_linear_function((cursor, 0), (cursor+_qspace, _amplitude), q_length)
+        quadrant2 = S_linear_function((cursor+_qspace, _amplitude), (cursor+qq, 0), q_length)
+        quadrant3 = S_linear_function((cursor+qq, 0), (cursor+qqq, -_amplitude), q_length)
+        quadrant4 = S_linear_function((cursor+qqq, -_amplitude), (cursor+(4*_qspace), 0), q_length)
+
+
+        fwave = quadrant1[:-1]+quadrant2[:-1]+quadrant3[:-1]+quadrant4[:-1]
+
+        x_val, y_val = zip(*fwave)
+
+        g_data.extend(y_val)
+
+    g_data.append(0)
+
+    return g_data
