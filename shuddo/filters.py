@@ -569,6 +569,11 @@ def S_gradient_filter(_data_list, _diff=0.1):
         d = abs(pgrad-grad)
         lv = abs(max(pgrad, grad))
 
+        if lv == 0:
+            g_data.append(_data_list[i])
+            pgrad = grad
+            continue
+
         if not ((d / lv) <= _diff):
             g_data.append(_data_list[i])
             pgrad = grad
