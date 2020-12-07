@@ -551,6 +551,32 @@ def S_generate_triangle_signal(_wave_length, _amplitude, _nwaves):
 
     return g_data
 
+def S_gradient_filter(_data_list, _diff=0.1):
+    """
+    Returns data samples where points with same gradient are discarded.
+    """
+
+    g_data = []
+
+    ds = len(_data_list)
+
+    pgrad = 0
+
+    for i in range(ds-1):
+
+        grad = (_data_list[i+1][1]-_data_list[i][1])/(_data_list[i+1][0]-_data_list[i][0])
+
+        d = abs(pgrad-grad)
+        lv = abs(max(pgrad, grad))
+
+        if not ((d / lv) <= _diff):
+            g_data.append(_data_list[i])
+            pgrad = grad
+
+    g_data.append(_data_list[-1])
+
+    return g_data
+
 def S_kalman(u, R=10, H=1.0):
     """
     Returns a new sample based on Kalman algorithm where R is noise covariance and H is a measurement scalar.
