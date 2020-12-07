@@ -491,7 +491,7 @@ def S_duplicates_filter(_data_list):
 
     return c_data
 
-def S_generate_signal_points(_data_list):
+def S_generate_interpolate_points(_data_list):
     """
     Returns new data samples by interpolating data samples
     """
@@ -501,11 +501,14 @@ def S_generate_signal_points(_data_list):
     ds = len(_data_list)
 
     for i in range(ds-1):
-        samples = S_linear_function((_data_list[i][0], _data_list[i][1]), (_data_list[i+1][0], _data_list[i+1][1]), (_data_list[i+1][0] - _data_list[i][0]) + 1)
+        samples = S_cosine_function((_data_list[i][0], _data_list[i][1]), (_data_list[i+1][0], _data_list[i+1][1]), (_data_list[i+1][0] - _data_list[i][0]) + 1)
         samples_len = len(samples)
 
         for j in range(samples_len-1):
             g_data.append((samples[j][0], samples[j][1]))
+
+
+    g_data.append(_data_list[-1])
 
     return g_data
 
@@ -547,3 +550,12 @@ def S_generate_triangle_signal(_wave_length, _amplitude, _nwaves):
     g_data.append(0)
 
     return g_data
+
+def S_kalman(u, R=10, H=1.0):
+    """
+    Returns a new sample based on Kalman algorithm where R is noise covariance and H is a measurement scalar.
+    """
+
+    Q = 10  # initial estimated covariance
+    P = 0   # initial error covariance
+    u_new = 0
