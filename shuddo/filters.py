@@ -582,11 +582,24 @@ def S_gradient_filter(_data_list, _diff=0.1):
 
     return g_data
 
-def S_kalman(u, R=10, H=1.0):
+def S_kalman_filter(_data_list, R=10, H=1.0):
     """
-    Returns a new sample based on Kalman algorithm where R is noise covariance and H is a measurement scalar.
+    Returns a new data samples based on Kalman algorithm where R is measured noise covariance and H is a measurement scalar.
     """
+
+    k_data = []
+
+    ds = len(_data_list)
 
     Q = 10  # initial estimated covariance
     P = 0   # initial error covariance
-    u_new = 0
+    K = 0 # initial Kalman gain
+    u_new = 0  # initial estimated value
+
+    for i in range(ds):
+        K = (P * H) / (((H ** 2) * P) + R)  # update Kalman gain
+        P = ((1 - (K * H)) * P) + Q  # update error covariance
+        u_new += (K * (_data_list[i] - (H * u_new)))  # estimated value
+        k_data.append(u_new)
+
+    return k_data

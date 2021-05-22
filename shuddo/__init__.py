@@ -21,6 +21,7 @@ from .filters import S_duplicates_filter
 from .filters import S_generate_interpolate_points
 from .filters import S_generate_triangle_signal
 from .filters import S_gradient_filter
+from .filters import S_kalman_filter
 from .mining import S_get_peaks_valleys
 from .mining import S_get_peak
 from .mining import S_get_all_peaks
