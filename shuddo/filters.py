@@ -1,4 +1,4 @@
-# Copyright (c) 2020, Md Imam Hossain (emamhd at gmail dot com)
+# Copyright (c) 2021, Md Imam Hossain (emamhd at gmail dot com)
 # see LICENSE.txt for details
 
 """
@@ -8,10 +8,10 @@ Data filtering functions
 from math import pi, cos
 from shuddo import mining
 
-def S_moving_average_data(_data_list, _smoothing=1):
+def S_moving_average_filter(_data_list, _smoothing=1):
     """
     Returns moving average data without data lag.
-    Use the smoothing factor to get required overall smoothing.
+    Use the smoothing factor to get required overall smoothing where the smoothing factor is greater than zero.
     """    
 
     ma_data = []    
@@ -38,7 +38,7 @@ def S_moving_average_data(_data_list, _smoothing=1):
     
     return ma_data
 
-def S_downsample(_data_list, _factor=1):
+def S_downsample_data(_data_list, _factor=1):
     """
     Returns a two dimensional data set with a reduced number of samples.
     Use the sample skipping factor to get required result, the factor tells how many samples to skip for one data sample.
@@ -80,7 +80,7 @@ def S_linear_function(_point1, _point2, _npoints):
     return points
 
 
-def S_upsample(_data_list, _factor=1, _smooth=False):
+def S_upsample_data(_data_list, _factor=1, _smooth=False):
     """
     Returns a two dimensional data set with an increased number of samples.
     The factor tells how many samples to add for one data sample where the smooth is to use smooth cosine interpolation for added samples.
@@ -131,7 +131,7 @@ def S_cosine_function(_point1, _point2, _npoints):
 
     return points
 
-def S_crop_data(_data_list, _max, _min):
+def S_crop_values(_data_list, _max, _min):
     """
     Returns a filtered data where values are discarded according to max, min limits.
     """
@@ -154,7 +154,7 @@ def S_crop_data(_data_list, _max, _min):
 
     return f_data
 
-def S_uniform_spread(_data_list, _nsamples):
+def S_uniform_spread_data(_data_list, _nsamples):
     """
     Returns a uniformly spread data samples where samples size is fixed by nsamples.
     """
@@ -205,7 +205,7 @@ def S_smooth_data(_data_list, _smoothing=1):
 
     return s_data
 
-def S_adjust_phase(_data_list, _transform):
+def S_adjust_phase_data(_data_list, _transform):
     """
     Returns data samples where the phase is moved by transform amount.
     """
@@ -218,9 +218,9 @@ def S_adjust_phase(_data_list, _transform):
 
     return a_data
 
-def S_scale_data(_data_list, _factor):
+def S_scale_values(_data_list, _factor):
     """
-    Returns data samples where y axis values are scaled by the factor.
+    Returns data samples where values are scaled by the factor.
     """
 
     s_data = []
@@ -231,7 +231,7 @@ def S_scale_data(_data_list, _factor):
 
     return s_data
 
-def S_change_amplitude(_data_list, _amount):
+def S_change_amplitude_values(_data_list, _amount):
     """
     Returns data samples where values are either increased or decreased by the amount.
     """
@@ -262,7 +262,7 @@ def S_change_amplitude(_data_list, _amount):
 
 def S_shift_data(_data_list, _transform):
     """
-    Returns data samples where values are translated by transform amount.
+    Returns data samples where y-axis values are translated by transform amount.
     """
 
     s_data = []
@@ -273,7 +273,7 @@ def S_shift_data(_data_list, _transform):
 
     return s_data
 
-def S_convolute_data(_data_list, _transformer):
+def S_convolute_values(_data_list, _transformer):
     """
     Returns new data samples where values are transformed by transformer values.
     """
@@ -290,7 +290,7 @@ def S_convolute_data(_data_list, _transformer):
 
     return c_data
 
-def S_invert_data(_data_list):
+def S_invert_values(_data_list):
     """
     Returns data samples where values are inverted.
     """
@@ -303,7 +303,7 @@ def S_invert_data(_data_list):
 
     return i_data
 
-def S_inverse_data(_data_list, _infinity_value='inf'):
+def S_inverse_values(_data_list, _infinity_value='inf'):
     """
     Returns data samples where values are inversely proporsional.
     """
@@ -327,6 +327,19 @@ def S_inverse_data(_data_list, _infinity_value='inf'):
 
     return i_data
 
+def S_translate_values(_data_list, _transform_amount):
+    """
+    Returns data samples where samples are translated by transform amount.
+    """
+
+    t_data = []
+    ds = len(_data_list)
+
+    for i in range(ds):
+        t_data.append(_data_list[i]+_transform_amount)
+
+    return t_data
+
 def S_translate_data(_data_list, _transform_x, _transform_y):
     """
     Returns data samples where data points are translated by transform amount.
@@ -340,7 +353,7 @@ def S_translate_data(_data_list, _transform_x, _transform_y):
 
     return t_data
 
-def S_translate_to_positive_axis(_data_list):
+def S_translate_to_positive_quadrant_data(_data_list):
     """
     Returns data samples where data points are translated to positive X and Y axes.
     """
@@ -351,6 +364,15 @@ def S_translate_to_positive_axis(_data_list):
     y_transform = abs(min(y_val))
 
     return S_translate_data(_data_list, x_transform, y_transform)
+
+def S_translate_to_positive_axis_values(_data_list):
+    """
+    Returns data samples where data points are translated to positive axis.
+    """
+
+    transform = abs(min(_data_list))
+
+    return S_translate_values(_data_list, transform)
 
 def S_envelope_filter(_data_list, _upper=True, _level=0.001, _step=1):
     """
@@ -372,7 +394,6 @@ def S_envelope_filter(_data_list, _upper=True, _level=0.001, _step=1):
         e_data.append(samples[j][1])
 
     return e_data
-
 
 def S_envelope_approximate_filter(_data_list, _smoothing=1, _upper=True):
     """
@@ -491,7 +512,7 @@ def S_duplicates_filter(_data_list):
 
     return c_data
 
-def S_generate_interpolate_points(_data_list):
+def S_generate_interpolate_points_data(_data_list):
     """
     Returns new data samples by interpolating data samples
     """
@@ -512,8 +533,7 @@ def S_generate_interpolate_points(_data_list):
 
     return g_data
 
-
-def S_generate_triangle_signal(_wave_length, _amplitude, _nwaves):
+def S_generate_triangle_signal_values(_wave_length, _amplitude, _nwaves):
     """
     Returns triangle signal data samples where nwaves defines number of full waves
     """
@@ -539,7 +559,6 @@ def S_generate_triangle_signal(_wave_length, _amplitude, _nwaves):
         quadrant2 = S_linear_function((cursor+_qspace, _amplitude), (cursor+qq, 0), q_length)
         quadrant3 = S_linear_function((cursor+qq, 0), (cursor+qqq, -_amplitude), q_length)
         quadrant4 = S_linear_function((cursor+qqq, -_amplitude), (cursor+(4*_qspace), 0), q_length)
-
 
         fwave = quadrant1[:-1]+quadrant2[:-1]+quadrant3[:-1]+quadrant4[:-1]
 
@@ -603,3 +622,24 @@ def S_kalman_filter(_data_list, R=10, H=1.0):
         k_data.append(u_new)
 
     return k_data
+
+def S_outlier_filter(_data_list, _factor=4):
+    """
+    Returns data samples where data samples significantly greater than median are discarded.
+    """
+
+    n_data = []
+
+    ds = len(_data_list)
+
+    p_d = S_translate_to_positive_axis_values(_data_list)
+
+    m_d = mining.S_median_sample(p_d)
+
+    b_v = m_d[1] * _factor  # boundary value for finding outliers
+
+    for i in range(ds):
+        if p_d[i] <= b_v:
+            n_data.append(_data_list[i])
+
+    return n_data
