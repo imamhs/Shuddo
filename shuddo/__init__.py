@@ -45,3 +45,4 @@ from .mining import S_find_range
 from .mining import S_covariance
 from .mining import S_find_gradients
 from .mining import S_find_square_floors
+from .mining import S_find_input_variable

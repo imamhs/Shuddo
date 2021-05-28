@@ -478,3 +478,40 @@ def S_find_square_floors(_data_list):
         pd = _data_list[i]
 
     return s_data
+
+def S_find_input_variable(finputs, input_var_index, for_result, f, _st=0.001, _result_tol=0.01, _search_dir=1):
+    """
+    Returns the required input parameter value of function for given function output.
+    finputs is list of function parameters to be passed to the function.
+    input_var_index selects the the parameter from finputs list which value to be determined (0 equals first parameter and so on).
+    for_result is expected result from the function
+    f is the function to be passed
+    _st is the step size for searching the required input parameter value
+    _result_tol is tolerance to expected result from the function
+    _search_dir is direction for searching the required input parameter value which is either -1 or 1
+    Return value contains both the required input parameter value and its corresponding result for the function
+    """
+
+    func_out = 0
+    p_func_out = 0
+    p_func_out_diff = -1
+
+    while abs(p_func_out - func_out) != p_func_out_diff:
+
+        #print(finputs[input_var_index], func_out, p_func_out_diff)
+
+        if isclose(func_out, for_result, abs_tol=_result_tol):
+            return (finputs[input_var_index], func_out)
+
+        if func_out > for_result:
+            finputs[input_var_index] += _search_dir*_st
+        elif func_out < for_result:
+            finputs[input_var_index] -= _search_dir*_st
+
+        p_func_out_diff = abs(p_func_out - func_out)
+
+        p_func_out = func_out
+
+        func_out = f(*finputs)
+
+    return (finputs[input_var_index], func_out)
