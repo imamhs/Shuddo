@@ -1,4 +1,4 @@
-# Copyright (c) 2021, Md Imam Hossain (emamhd at gmail dot com)
+# Copyright (c) 2019-2021, Md Imam Hossain (emamhd at gmail dot com)
 # see LICENSE.txt for details
 
 """
@@ -380,7 +380,7 @@ def S_envelope_filter(_data_list, _upper=True, _level=0.001, _step=1):
     Use the level parameter to tweak envelope detection and set upper to False to get lower envelope.
     """
 
-    peaks = mining.S_get_all_peaks(_data_list, _level=_level, _step=_step, _valley=not _upper)
+    peaks = mining.S_get_all_peaks_values(_data_list, _level=_level, _step=_step, _valley=not _upper)
 
     e_data = []
 
@@ -413,7 +413,7 @@ def S_envelope_approximate_filter(_data_list, _smoothing=1, _upper=True):
             db = _data_list[:i + i + 1]
             nfc = len(db)
             ma = sum(db) / nfc
-            sd = mining.S_standard_deviation(db)
+            sd = mining.S_standard_deviation_values(db)
             if _data_list[i] > 0:
                 if _upper == True:
                     ea_data.append(ma+sd)
@@ -432,7 +432,7 @@ def S_envelope_approximate_filter(_data_list, _smoothing=1, _upper=True):
                 db = _data_list[i - fc:i + fc + 1]
                 nfc = fmas + 1
                 ma = sum(db) / nfc
-                sd = mining.S_standard_deviation(db)
+                sd = mining.S_standard_deviation_values(db)
                 if _data_list[i] > 0:
                     if _upper == True:
                         ea_data.append(ma + sd)
@@ -449,7 +449,7 @@ def S_envelope_approximate_filter(_data_list, _smoothing=1, _upper=True):
                 db = _data_list[i - (ds - i - 1):]
                 nfc = len(db)
                 ma = sum(db) / nfc
-                sd = mining.S_standard_deviation(db)
+                sd = mining.S_standard_deviation_values(db)
                 if _data_list[i] > 0:
                     if _upper == True:
                         ea_data.append(ma + sd)
@@ -477,7 +477,7 @@ def S_duplicates_filter(_data_list):
     i_points_s = []
     i_points_e = []
 
-    sq = mining.S_find_square_floors(_data_list)
+    sq = mining.S_find_square_floors_values(_data_list)
 
     dsq = len(sq)
 
@@ -612,7 +612,6 @@ def S_kalman_filter(_data_list, R=10, H=1.0):
 
     Q = 10  # initial estimated covariance
     P = 0   # initial error covariance
-    K = 0 # initial Kalman gain
     u_new = 0  # initial estimated value
 
     for i in range(ds):
@@ -634,7 +633,7 @@ def S_outlier_filter(_data_list, _factor=4):
 
     p_d = S_translate_to_positive_axis_values(_data_list)
 
-    m_d = mining.S_median_sample(p_d)
+    m_d = mining.S_median_sample_values(p_d)
 
     b_v = m_d[1] * _factor  # boundary value for finding outliers
 
@@ -643,3 +642,115 @@ def S_outlier_filter(_data_list, _factor=4):
             n_data.append(_data_list[i])
 
     return n_data
+
+def S_difference_values(_data_lista, _data_listb):
+    """
+    Returns new data samples where values are transformed by transformer values.
+    """
+
+    d_data = []
+    dsa = len(_data_lista)
+    dsb = len(_data_listb)
+
+    if dsa != dsb:
+        return []
+
+    for i in range(dsa):
+        d_data.append(_data_lista[i] - _data_listb[i])
+
+    return d_data
+
+def S_self_operate_values(_data_list, _step=1, _operation=1):
+    """
+    Apply arithmetic operation on data samples themselves
+    step parameter is used to define how many data points to skip for calculating accelerated values
+    _operation parameter is used for selecting one of the operations (1: addition, 2: subtraction, 3: multiplication, 4: division, 5: modulus)
+    """
+
+    a_data = []
+    ds = len(_data_list)
+    cursor = _step
+    found_data = False
+    res = 0
+
+    if ds == 0:
+        return []
+
+    for i in range(_step):
+        a_data.append(0.0)
+
+    while cursor < (ds):
+
+        if found_data == True:
+
+            if _operation == 1:
+                res = _data_list[cursor] + _data_list[cursor-1]
+            elif _operation == 2:
+                res = _data_list[cursor] - _data_list[cursor - 1]
+            elif _operation == 3:
+                res = _data_list[cursor] * _data_list[cursor - 1]
+            elif _operation == 4:
+                res = _data_list[cursor] / _data_list[cursor - 1]
+            elif _operation == 5:
+                res = _data_list[cursor] % _data_list[cursor - 1]
+            else:
+                res = 0
+
+            a_data.append(res)
+        else:
+            if _data_list[cursor] != 0:
+                found_data = True
+            a_data.append(0.0)
+
+        cursor += _step
+
+    return a_data
+
+def S_aggravate_filter(_data_list, _iteration=1):
+    """
+    Returns data samples where original data samples are aggravated for _iteration number of times
+    and then factored to scale to match original data samples amplitude
+    """
+
+    if _iteration < 1:
+        return []
+
+    a_data = []
+
+    ds_max = abs(max(_data_list))
+    ds_min = abs(min(_data_list))
+
+    scale_factor_d = ds_max
+
+    if ds_min > scale_factor_d:
+        scale_factor_d = ds_min
+
+    a_data = S_self_operate_values(_data_list)
+
+    for i in range(_iteration-1):
+        a_data = S_self_operate_values(a_data)
+
+    ds_max = abs(max(a_data))
+    ds_min = abs(min(a_data))
+
+    scale_factor_ad = ds_max
+
+    if ds_min > scale_factor_ad:
+        scale_factor_ad = ds_min
+
+    scale_factor =  scale_factor_d / scale_factor_ad
+
+    a_data = [i * scale_factor for i in a_data]
+
+    return a_data
+
+def S_round_filter(_data_list, _factor=2):
+    """
+    Round up data samples using round method
+    """
+
+    r_data = []
+
+    r_data = [round(i,_factor) for i in _data_list]
+
+    return r_data

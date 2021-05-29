@@ -1,13 +1,13 @@
-# Copyright (c) 2020, Md Imam Hossain (emamhd at gmail dot com)
+# Copyright (c) 2019-2021, Md Imam Hossain (emamhd at gmail dot com)
 # see LICENSE.txt for details
 
 """
-Data mining functions
+Data mining and analysing functions
 """
 
 from math import isclose, hypot, pi, floor
 
-def S_get_peaks_valleys(_data_list, _level=0.01, _distance=1):
+def S_get_peaks_valleys_values(_data_list, _level=0.01, _distance=1):
     """
     Returns all the peaks and valleys present in the data samples
     The level parameter defines the minimum level change required between consecutive peaks and valleys
@@ -40,9 +40,11 @@ def S_get_peaks_valleys(_data_list, _level=0.01, _distance=1):
     return peaksvalleys
 
 
-def S_get_peak(_data_list, _cursor=0, _base_line=0):
+def S_get_peak_values(_data_list, _cursor=0, _base_line=0):
     """
-    Returns the features of a first positive or negative peak from the data, define horizontal separation for the peak detection by setting the base line, define detection starting location by setting the cursor
+    Returns the features of a first positive or negative peak from the data
+    Define horizontal separation for the peak detection by setting the base line
+    Define detection starting location by setting the cursor
     """
 
     data_point = []
@@ -84,10 +86,10 @@ def S_get_peak(_data_list, _cursor=0, _base_line=0):
         return (_cursor + (peak_width/2), peak_value, peak_width, peak_start_location, cursor)
         
         
-def S_get_all_peaks(_data_list, _level=0.5, _step=1, _valley=False):
+def S_get_all_peaks_values(_data_list, _level=0.5, _step=1, _valley=False):
     """
-    Returns all the peaks available in the data based on height differences between points next to each
-    other as set by level where step defines the number of points to skip for checking the level difference.
+    Returns all the peaks available in the data based on height differences between points next to each other as set by level parameter
+    step defines the number of points to skip for checking the level difference
     """
 
     ds = len(_data_list)
@@ -151,9 +153,9 @@ def S_get_all_peaks(_data_list, _level=0.5, _step=1, _valley=False):
     
     return peaks
 
-def S_is_neighbour(_data_list, _sample, _similarity=0.8):
+def S_is_neighbour_data(_data_list, _sample, _similarity=0.8):
     """
-    Checks if provided sample is in close proximity for a given data samples.
+    Checks if provided sample is in close proximity for a given data samples
     """
 
     ds = len(_data_list)
@@ -174,9 +176,9 @@ def S_is_neighbour(_data_list, _sample, _similarity=0.8):
 
     return False
 
-def S_get_cluster_centroid(_data_list):
+def S_get_cluster_centroid_data(_data_list):
     """
-    Finds the centroid of a given two dimensional data samples cluster.
+    Finds the centroid of a given two dimensional data samples cluster
     """
     ds = len(_data_list)
 
@@ -188,9 +190,9 @@ def S_get_cluster_centroid(_data_list):
             y_sum += i[1]
         return (x_sum / ds, y_sum / ds)
 
-def S_get_cluster_radius(_data_list, _center):
+def S_get_cluster_radius_data(_data_list, _center):
     """
-    Finds the radius of a given two dimensional data samples cluster.
+    Finds the radius of a given two dimensional data samples cluster
     """
 
     ds = len(_data_list)
@@ -204,9 +206,9 @@ def S_get_cluster_radius(_data_list, _center):
             return 0
         return (radius, ds/(pi*(radius**2)))
 
-def S_get_clusters(_data_list, _similarity=0.8):
+def S_get_clusters_data(_data_list, _similarity=0.8):
     """
-    Finds the clusters present for given two dimensional scattered data samples.
+    Finds the clusters present for given two dimensional scattered data samples
     """
 
     clusters = []
@@ -220,7 +222,7 @@ def S_get_clusters(_data_list, _similarity=0.8):
         else:
             neighbour = False
             for ii in range(len(clusters)):
-                if S_is_neighbour(clusters[ii], _data_list[i], _similarity=_similarity):
+                if S_is_neighbour_data(clusters[ii], _data_list[i], _similarity=_similarity):
                     clusters[ii].append((_data_list[i][0], _data_list[i][1]))
                     neighbour = True
                     break
@@ -228,14 +230,14 @@ def S_get_clusters(_data_list, _similarity=0.8):
                 clusters.append([(_data_list[i][0], _data_list[i][1])])
 
     for i in clusters:
-        centroids.append(S_get_cluster_centroid(i))
+        centroids.append(S_get_cluster_centroid_data(i))
 
     return list(zip(clusters, centroids))
 
-def S_get_histogram(_data_list, _level=0.1):
+def S_get_histogram_values(_data_list, _level=0.1):
     """
-    Finds the groups present for given data samples.
-    Groups will be divided based on value difference as set by level.
+    Finds the groups present for given data samples
+    Groups will be divided based on value difference as set by level parameter
     """
 
     s_data = sorted(_data_list)
@@ -266,10 +268,10 @@ def S_get_histogram(_data_list, _level=0.1):
 
     return list(zip(averages, counts))
 
-def S_check_similarity(_data_lista, _data_listb, _band=0.1, _tolerance=5):
+def S_check_similarity_values(_data_lista, _data_listb, _band=0.1, _tolerance=5):
     """
-    Checks if two data sets are similar when samples are aligned.
-    Band determines difference in values and tolerance tells number of dissimilar samples to ignore.
+    Checks if two data sets are similar when samples are aligned
+    band parameter determines difference in values and tolerance tells number of dissimilar samples to ignore
     """
 
     dsa = len(_data_lista)
@@ -282,15 +284,16 @@ def S_check_similarity(_data_lista, _data_listb, _band=0.1, _tolerance=5):
 
     for i in range(dsa):
 
-        if isclose(_data_lista[i], _data_listb, abs_tol=_band) == False:
+        if isclose(_data_lista[i], _data_listb[i], abs_tol=_band) == False:
             tol += 1
 
         if tol >= _tolerance:
+            print("Hello")
             return False
 
     return True
 
-def S_variance(_data_list):
+def S_variance_values(_data_list):
 
     ds = len(_data_list)
     mean = sum(_data_list)/ds
@@ -303,13 +306,13 @@ def S_variance(_data_list):
 
     return average_spread
 
-def S_standard_deviation(_data_list):
+def S_standard_deviation_values(_data_list):
 
-    return (S_variance(_data_list))**(1/2)
+    return (S_variance_values(_data_list))**(1/2)
 
-def S_median_sample(_data_list):
+def S_median_sample_values(_data_list):
     """
-    Returns middle value from data set and its location.
+    Returns middle value from data set and corresponding location
     """
 
     vals = sorted(_data_list)
@@ -322,9 +325,9 @@ def S_median_sample(_data_list):
         return ((i+0.5),((vals[i-1] + vals[i])/2))
 
 
-def S_count_leftright(_data_list, _value):
+def S_count_leftright_values(_data_list, _value):
     """
-    Returns the number of samples to the left and the right of a sample from a data set as expressed by value.
+    Returns the number of samples to the left and the right of a sample from a data set as expressed by value
     """
 
     vals = sorted(_data_list)
@@ -340,10 +343,10 @@ def S_count_leftright(_data_list, _value):
 
     return (left_c, right_c)
 
-def S_average_high(_data_list, _percent=0.1):
+def S_average_high_values(_data_list, _percent=0.1):
     """
-    Returns average of higher value samples where the number of samples to consider is defined by percent.
-    1.0 equals all samples, 0.2 equals 20 percent of samples from a data set.
+    Returns average of higher value samples where the number of samples to consider is defined by percent parameter
+    1.0 equals all samples, 0.2 equals 20 percent of samples from a data set
     """
 
     if _percent > 1.0 or _percent < 0.1:
@@ -356,10 +359,10 @@ def S_average_high(_data_list, _percent=0.1):
     samples_len = len(samples)
     return sum(samples)/samples_len
 
-def S_average_low(_data_list, _percent=0.5):
+def S_average_low_values(_data_list, _percent=0.5):
     """
-    Returns average of lower value samples where the number of samples to consider is defined by percent.
-    1.0 equals all samples, 0.2 equals 20 percent of samples from a data set.
+    Returns average of lower value samples where the number of samples to consider is defined by percent parameter
+    1.0 equals all samples, 0.2 equals 20 percent of samples from a data set
     """
 
     if _percent > 1.0 or _percent < 0.1:
@@ -372,11 +375,11 @@ def S_average_low(_data_list, _percent=0.5):
     samples_len = len(samples)
     return sum(samples)/samples_len
 
-def S_proximity(_data_list, _percent_similarity=0.95):
+def S_proximity_data(_data_list, _percent_similarity=0.95):
     """
-    Calculates average of smallest distances between data points when samples are translated to positive values.
-    Percent similarity is used for determining closeness between data points.
-    Returns smallest distances along X and Y axes.
+    Calculates average of smallest distances between data points when samples are translated to positive values
+    percent similarity parameter is used for determining closeness between data points.
+    Returns smallest distances along X and Y axes
     """
 
     x_val, y_val = list(zip(*_data_list))
@@ -408,15 +411,15 @@ def S_proximity(_data_list, _percent_similarity=0.95):
 
     return (x_proximity, y_proximity)
 
-def S_find_range(_data_list):
+def S_find_range_values(_data_list):
     """
-    Returns smallest and largest values in the one dimensional dataset.
+    Returns smallest and largest values in the one dimensional dataset
     """
     return (min(_data_list), max(_data_list))
 
-def S_covariance(_data_list):
+def S_covariance_data(_data_list):
     """
-    Returns covariance of two dimensional data samples.
+    Returns covariance of two dimensional data samples
     """
 
     ds = len(_data_list)
@@ -431,9 +434,9 @@ def S_covariance(_data_list):
     else:
         return None
 
-def S_find_gradients(_data_list):
+def S_find_gradients_values(_data_list):
     """
-    Returns all gradients from the data samples.
+    Returns all gradients from the data samples
     """
 
     g_data = []
@@ -449,9 +452,9 @@ def S_find_gradients(_data_list):
 
     return g_data
 
-def S_find_square_floors(_data_list):
+def S_find_square_floors_values(_data_list):
     """
-    Returns locations of values which do not change.
+    Returns locations of values which do not change
     """
 
     s_data = []
@@ -479,7 +482,7 @@ def S_find_square_floors(_data_list):
 
     return s_data
 
-def S_find_input_variable(finputs, input_var_index, for_result, f, _st=0.001, _result_tol=0.01, _search_dir=1):
+def S_find_input_variable(finputs, input_var_index, for_result, f, _st=0.001, _result_tolerance=0.01, _search_direction=1):
     """
     Returns the required input parameter value of function for given function output.
     finputs is list of function parameters to be passed to the function.
@@ -487,8 +490,8 @@ def S_find_input_variable(finputs, input_var_index, for_result, f, _st=0.001, _r
     for_result is expected result from the function
     f is the function to be passed
     _st is the step size for searching the required input parameter value
-    _result_tol is tolerance to expected result from the function
-    _search_dir is direction for searching the required input parameter value which is either -1 or 1
+    _result_tolerance is tolerance to expected result from the function
+    _search_direction is direction for searching the required input parameter value which is either -1 or 1
     Return value contains both the required input parameter value and its corresponding result for the function
     """
 
@@ -498,15 +501,13 @@ def S_find_input_variable(finputs, input_var_index, for_result, f, _st=0.001, _r
 
     while abs(p_func_out - func_out) != p_func_out_diff:
 
-        #print(finputs[input_var_index], func_out, p_func_out_diff)
-
-        if isclose(func_out, for_result, abs_tol=_result_tol):
+        if isclose(func_out, for_result, abs_tol=_result_tolerance):
             return (finputs[input_var_index], func_out)
 
         if func_out > for_result:
-            finputs[input_var_index] += _search_dir*_st
+            finputs[input_var_index] += _search_direction*_st
         elif func_out < for_result:
-            finputs[input_var_index] -= _search_dir*_st
+            finputs[input_var_index] -= _search_direction*_st
 
         p_func_out_diff = abs(p_func_out - func_out)
 
