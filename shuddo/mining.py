@@ -16,6 +16,9 @@ def S_get_peaks_valleys_values(_data_list, _level=0.01, _distance=1):
 
     ds = len(_data_list)
 
+    if ds < 2:
+        return []
+
     peaksvalleys = []
 
     moving_p = (0, 0)
@@ -93,6 +96,9 @@ def S_get_all_peaks_values(_data_list, _level=0.5, _step=1, _valley=False):
     """
 
     ds = len(_data_list)
+
+    if ds < 2:
+        return []
     
     peaks = []
     data_point = []
@@ -211,9 +217,13 @@ def S_get_clusters_data(_data_list, _similarity=0.8):
     Finds the clusters present for given two dimensional scattered data samples
     """
 
+    ds = len(_data_list)
+
+    if ds < 2:
+        return []
+
     clusters = []
     centroids = []
-    ds = len(_data_list)
 
     for i in range(ds):
 
@@ -240,6 +250,11 @@ def S_get_histogram_values(_data_list, _level=0.1):
     Groups will be divided based on value difference as set by level parameter
     """
 
+    ds = len(_data_list)
+
+    if ds < 1:
+        return []
+
     s_data = sorted(_data_list)
 
     bins = []
@@ -249,8 +264,6 @@ def S_get_histogram_values(_data_list, _level=0.1):
     comparator = s_data[0]
 
     bins.append([s_data[0]])
-
-    ds = len(s_data)
 
     for i in range(1, ds):
         if s_data[i] > (comparator + _level):
@@ -277,10 +290,10 @@ def S_check_similarity_values(_data_lista, _data_listb, _band=0.1, _tolerance=5)
     dsa = len(_data_lista)
     dsb = len(_data_listb)
 
-    tol = 0
-
     if dsa != dsb:
         return False
+
+    tol = 0
 
     for i in range(dsa):
 
@@ -296,6 +309,10 @@ def S_check_similarity_values(_data_lista, _data_listb, _band=0.1, _tolerance=5)
 def S_variance_values(_data_list):
 
     ds = len(_data_list)
+
+    if ds == 0:
+        return -1
+
     mean = sum(_data_list)/ds
     average_spread = 0
 
@@ -315,8 +332,12 @@ def S_median_sample_values(_data_list):
     Returns middle value from data set and corresponding location
     """
 
+    ds = len(_data_list)
+
+    if ds == 0:
+        return -1
+
     vals = sorted(_data_list)
-    ds = len(vals)
     i = floor(ds / 2)
 
     if ds%2 == 1:
@@ -354,15 +375,17 @@ def S_average_highlow_values(_data_list, _percent=0.1, _low=False):
 
     vals = sorted(_data_list)
     ds = len(vals)
-    i  = 0
     samples = None
+
     if _low == False:
         i = floor(ds * (1-_percent))
         samples = vals[i-ds:ds]
     else:
         i = floor(ds * _percent)
         samples = vals[:i]
+
     samples_len = len(samples)
+
     return sum(samples)/samples_len
 
 def S_proximity_data(_data_list, _percent_similarity=0.95):
@@ -372,6 +395,11 @@ def S_proximity_data(_data_list, _percent_similarity=0.95):
     Returns smallest distances along X and Y axes
     """
 
+    ds = len(_data_list)
+
+    if ds < 2:
+        return -1
+
     x_val, y_val = list(zip(*_data_list))
     
     x_val = sorted(x_val)
@@ -379,8 +407,6 @@ def S_proximity_data(_data_list, _percent_similarity=0.95):
 
     x_diffs = []
     y_diffs = []
-
-    ds = len(x_val)
 
     for i in range(1, ds):
         x_diff = x_val[i] - x_val[i-1]

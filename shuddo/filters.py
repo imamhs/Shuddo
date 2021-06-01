@@ -753,3 +753,44 @@ def S_round_filter(_data_list, _factor=2):
     r_data = [round(i,_factor) for i in _data_list]
 
     return r_data
+
+def S_integrate_values(_data_list, _initial_value=0):
+    """
+    Integrate data samples to produce new data samples
+    """
+
+    ds = len(_data_list)
+
+    if ds == 0:
+        return []
+
+    i_data = []
+
+    if _initial_value != 0:
+        i_data.append(_initial_value)
+    else:
+        i_data.append(_data_list[0])
+
+    for i in range(1, ds):
+        i_data.append(_data_list[i]+i_data[i-1])
+
+    return i_data
+
+def S_acceleration_filter(_data_list, _smoothing=1):
+    """
+    Returns data samples where original data samples are accelerated for _iteration number of times
+    and then smoothed to get smoothing effect on the data samples
+    """
+
+    ds = len(_data_list)
+
+    if ds == 0:
+        return []
+
+    a_data = S_self_operate_values(_data_list, _operation=2)
+
+    a_data = S_moving_average_filter(a_data, _smoothing=_smoothing)
+
+    a_data = S_integrate_values(a_data, _initial_value=_data_list[0])
+
+    return a_data
