@@ -583,7 +583,7 @@ def S_gradient_filter(_data_list, _diff=0.1):
 
     for i in range(ds-1):
 
-        grad = (_data_list[i+1][1]-_data_list[i][1])/(_data_list[i+1][0]-_data_list[i][0])
+        grad = _data_list[i+1]-_data_list[i]
 
         d = abs(pgrad-grad)
         lv = abs(max(pgrad, grad))
@@ -601,23 +601,22 @@ def S_gradient_filter(_data_list, _diff=0.1):
 
     return g_data
 
-def S_kalman_filter(_data_list, R=10, H=1.0):
+def S_kalman_filter(_data_list, R=10, H=1.0, Q=10, P=0, u_new=0):
     """
     Returns a new data samples based on Kalman algorithm where R is measured noise covariance and H is a measurement scalar.
+    Q is initial estimated covariance (process variance)
+    P is initial error covariance
+    u_new is initial estimated value
     """
 
     k_data = []
 
     ds = len(_data_list)
 
-    Q = 10  # initial estimated covariance
-    P = 0   # initial error covariance
-    u_new = 0  # initial estimated value
-
     for i in range(ds):
         K = (P * H) / (((H ** 2) * P) + R)  # update Kalman gain
-        P = ((1 - (K * H)) * P) + Q  # update error covariance
         u_new += (K * (_data_list[i] - (H * u_new)))  # estimated value
+        P = ((1 - (K * H)) * P) + Q  # update error covariance
         k_data.append(u_new)
 
     return k_data
@@ -738,7 +737,7 @@ def S_aggravate_filter(_data_list, _iteration=1):
     if ds_min > scale_factor_ad:
         scale_factor_ad = ds_min
 
-    scale_factor =  scale_factor_d / scale_factor_ad
+    scale_factor = scale_factor_d / scale_factor_ad
 
     a_data = [i * scale_factor for i in a_data]
 

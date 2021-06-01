@@ -42,8 +42,7 @@ from .mining import S_variance_values
 from .mining import S_standard_deviation_values
 from .mining import S_median_sample_values
 from .mining import S_count_leftright_values
-from .mining import S_average_high_values
-from .mining import S_average_low_values
+from .mining import S_average_highlow_values
 from .mining import S_proximity_data
 from .mining import S_find_range_values
 from .mining import S_covariance_data

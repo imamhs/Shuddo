@@ -343,9 +343,9 @@ def S_count_leftright_values(_data_list, _value):
 
     return (left_c, right_c)
 
-def S_average_high_values(_data_list, _percent=0.1):
+def S_average_highlow_values(_data_list, _percent=0.1, _low=False):
     """
-    Returns average of higher value samples where the number of samples to consider is defined by percent parameter
+    Returns average of high values or low values samples where the number of samples to consider is defined by percent parameter
     1.0 equals all samples, 0.2 equals 20 percent of samples from a data set
     """
 
@@ -354,24 +354,14 @@ def S_average_high_values(_data_list, _percent=0.1):
 
     vals = sorted(_data_list)
     ds = len(vals)
-    i = floor(ds * (1-_percent))
-    samples = vals[i-ds:ds]
-    samples_len = len(samples)
-    return sum(samples)/samples_len
-
-def S_average_low_values(_data_list, _percent=0.5):
-    """
-    Returns average of lower value samples where the number of samples to consider is defined by percent parameter
-    1.0 equals all samples, 0.2 equals 20 percent of samples from a data set
-    """
-
-    if _percent > 1.0 or _percent < 0.1:
-        return None
-
-    vals = sorted(_data_list)
-    ds = len(vals)
-    i = floor(ds * _percent)
-    samples = vals[:i]
+    i  = 0
+    samples = None
+    if _low == False:
+        i = floor(ds * (1-_percent))
+        samples = vals[i-ds:ds]
+    else:
+        i = floor(ds * _percent)
+        samples = vals[:i]
     samples_len = len(samples)
     return sum(samples)/samples_len
 
