@@ -680,26 +680,30 @@ def S_self_operate_values(_data_list, _step=1, _operation=1):
 
     while cursor < (ds):
 
+        if _operation == 1:
+            res = _data_list[cursor] + _data_list[cursor - 1]
+        elif _operation == 2:
+            res = _data_list[cursor] - _data_list[cursor - 1]
+        elif _operation == 3:
+            res = _data_list[cursor] * _data_list[cursor - 1]
+        elif _operation == 4:
+            res = _data_list[cursor] / _data_list[cursor - 1]
+        elif _operation == 5:
+            res = _data_list[cursor] % _data_list[cursor - 1]
+        else:
+            res = 0
+
         if found_data == True:
-
-            if _operation == 1:
-                res = _data_list[cursor] + _data_list[cursor-1]
-            elif _operation == 2:
-                res = _data_list[cursor] - _data_list[cursor - 1]
-            elif _operation == 3:
-                res = _data_list[cursor] * _data_list[cursor - 1]
-            elif _operation == 4:
-                res = _data_list[cursor] / _data_list[cursor - 1]
-            elif _operation == 5:
-                res = _data_list[cursor] % _data_list[cursor - 1]
-            else:
-                res = 0
-
             a_data.append(res)
         else:
             if _data_list[cursor] != 0:
                 found_data = True
-            a_data.append(0.0)
+                if _data_list[cursor] != 0 and _data_list[cursor-1] != 0:
+                    a_data.append(res)
+                else:
+                    a_data.append(0.0)
+            else:
+                a_data.append(0.0)
 
         cursor += _step
 
@@ -766,17 +770,31 @@ def S_integrate_values(_data_list, _initial_value=0):
 
     i_data = []
 
-    if _initial_value != 0:
-        i_data.append(_initial_value)
-    else:
-        i_data.append(_data_list[0])
+    cursor = 0
 
-    for i in range(1, ds):
+    for i in range(ds):
+        if _data_list[i] == 0:
+            i_data.append(0.0)
+        else:
+            break
+        cursor += 1
+
+    if cursor != 0:
+        if _initial_value != 0:
+            i_data[cursor - 1] = _initial_value
+    else:
+        if _initial_value != 0:
+            i_data.append(_initial_value)
+        else:
+            i_data.append(_data_list[0])
+        cursor += 1
+
+    for i in range(cursor, ds):
         i_data.append(_data_list[i]+i_data[i-1])
 
     return i_data
 
-def S_acceleration_filter(_data_list, _smoothing=1):
+def S_acceleration_filter(_data_list, _smoothing=1, _iteration=1):
     """
     Returns data samples where original data samples are accelerated for _iteration number of times
     and then smoothed to get smoothing effect on the data samples
@@ -787,10 +805,18 @@ def S_acceleration_filter(_data_list, _smoothing=1):
     if ds == 0:
         return []
 
+    i_values = []
+
+    i_values.append(mining.S_find_first_nonzero_values(_data_list))
     a_data = S_self_operate_values(_data_list, _operation=2)
+
+    for i in range(_iteration-1):
+        i_values.append(mining.S_find_first_nonzero_values(a_data))
+        a_data = S_self_operate_values(a_data, _operation=2)
 
     a_data = S_moving_average_filter(a_data, _smoothing=_smoothing)
 
-    a_data = S_integrate_values(a_data, _initial_value=_data_list[0])
+    for i in reversed(i_values):
+        a_data = S_integrate_values(a_data, _initial_value=i)
 
     return a_data

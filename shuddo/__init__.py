@@ -51,3 +51,4 @@ from .mining import S_covariance_data
 from .mining import S_find_gradients_values
 from .mining import S_find_square_floors_values
 from .mining import S_find_input_variable
+from .mining import S_find_first_nonzero_values

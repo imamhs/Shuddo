@@ -532,3 +532,9 @@ def S_find_input_variable(finputs, input_var_index, for_result, f, _st=0.001, _r
         func_out = f(*finputs)
 
     return (finputs[input_var_index], func_out)
+
+def S_find_first_nonzero_values(_data_list):
+
+    for i in _data_list:
+        if i != 0:
+            return i
