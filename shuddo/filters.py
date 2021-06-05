@@ -820,3 +820,61 @@ def S_acceleration_filter(_data_list, _smoothing=1, _iteration=1):
         a_data = S_integrate_values(a_data, _initial_value=i)
 
     return a_data
+    
+def S_linear_model_data(_data_list):
+    """
+    Returns linear regression model of data samples
+    """
+    
+    ds = len(_data_list)
+    
+    if ds < 2:
+        return -1
+
+    r_data = []
+
+    x_val, y_val = list(zip(*_data_list))
+    
+    x_val_sum = sum(x_val)
+    y_val_sum = sum(y_val)
+    
+    x_val_power = [i*i for i in x_val]
+    x_val_power_sum = sum(x_val_power)
+    x_y_val = [x*y for x, y in _data_list]
+    x_y_val_sum = sum(x_y_val)
+        
+    a = ((y_val_sum*x_val_power_sum)-(x_val_sum*x_y_val_sum))/((ds*x_val_power_sum) - (x_val_sum**2))
+    b = ((ds*x_y_val_sum) - (x_val_sum*y_val_sum))/((ds*x_val_power_sum) - (x_val_sum**2))
+    
+    for i in x_val:
+        r_data.append((i, a+(b*i)))
+        
+    return r_data
+    
+def S_linear_model_window_data(_data_list, _window=10):
+    """
+    Returns linear regression model of data samples using window size steps
+    """
+    
+    ds = len(_data_list)
+    
+    if ds < 2:
+        return -1
+    
+    r_data  = []
+    
+    cursor = 0
+    
+    while cursor < (ds):
+    
+        lr = S_linear_model_data(_data_list[cursor:cursor+_window])
+        
+        for i in lr:
+
+            r_data.append(i)
+
+        cursor += _window
+
+    return r_data    
+
+
