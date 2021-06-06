@@ -7,6 +7,7 @@ I was hoping to make an efficient and smart numerical data processing library in
 ![High Low values](examples/highlow1.png)
 ![Boundary detection](examples/boundary.png)
 ![Groups finding](examples/groups_finding.png)
+![Groups finding1](examples/cluster_finding.png)
 ![Signal filtering](examples/aggravate_filter.png)
 
 
