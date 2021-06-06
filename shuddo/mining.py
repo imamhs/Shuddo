@@ -538,3 +538,17 @@ def S_find_first_nonzero_values(_data_list):
     for i in _data_list:
         if i != 0:
             return i
+            
+def S_find_sample_distance_values(_data_list, _sample):
+    """
+    Returns average, minimum and maximum distances of data points for a given data point
+    """
+
+    ds = len(_data_list)
+
+    if ds > 0:
+        dists = []
+        for i in _data_list:
+            dists.append(hypot(i[0] - _sample[0], i[1] - _sample[1]))
+
+        return (sum(dists)/ds, min(dists), max(dists), dists)
