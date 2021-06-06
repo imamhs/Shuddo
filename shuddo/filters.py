@@ -877,4 +877,23 @@ def S_linear_model_window_data(_data_list, _window=10):
 
     return r_data    
 
+def S_cluster_outlier_filter(_data_list, _similarity=0.8):
+    """
+    Returns data samples where a data sample outside a cluster is discarded
+    """
 
+    ds = len(_data_list)
+
+    if ds < 2:
+        return -1
+
+    n_data = []
+
+    c = mining.S_get_clusters_data(_data_list, _similarity)
+
+    for i in c:
+        if len(i[0]) > 1:
+            for ii in i[0]:
+                n_data.append(ii)
+
+    return n_data
