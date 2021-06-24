@@ -5,6 +5,7 @@
 Data filtering functions
 """
 
+from random import random
 from math import pi, cos
 from shuddo import mining
 
@@ -888,6 +889,7 @@ def S_cluster_outlier_filter(_data_list, _similarity=0.8):
         return -1
 
     n_data = []
+    d_data = []
 
     c = mining.S_get_clusters_data(_data_list, _similarity)
 
@@ -895,5 +897,21 @@ def S_cluster_outlier_filter(_data_list, _similarity=0.8):
         if len(i[0]) > 1:
             for ii in i[0]:
                 n_data.append(ii)
+        elif len(i[0]) == 1:
+            d_data.append(i[0][0])
 
-    return n_data
+    return (n_data, d_data)
+
+def S_generate_noise_signal_values(_samples, _amplitude_factor):
+    """
+    Returns noise signal data samples where _amplitude_factor defines the peak magnitude in the signal
+    """
+
+    n_data = []
+
+    for i in range(_samples):
+
+        n_data.append(random()*(_amplitude_factor*2))
+
+    return S_translate_values(n_data, -1 * _amplitude_factor)
+

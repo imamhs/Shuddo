@@ -4,8 +4,7 @@
 """
 Data mining and analysing functions
 """
-
-from math import isclose, hypot, pi, floor
+from math import isclose, hypot, pi, floor, sqrt
 
 def S_get_peaks_valleys_values(_data_list, _level=0.01, _distance=1):
     """
@@ -539,7 +538,7 @@ def S_find_first_nonzero_values(_data_list):
         if i != 0:
             return i
             
-def S_find_sample_distance_values(_data_list, _sample):
+def S_find_sample_distance_data(_data_list, _sample):
     """
     Returns average, minimum and maximum distances of data points for a given data point
     """
@@ -552,3 +551,22 @@ def S_find_sample_distance_values(_data_list, _sample):
             dists.append(hypot(i[0] - _sample[0], i[1] - _sample[1]))
 
         return (sum(dists)/ds, min(dists), max(dists), dists)
+
+    else:
+        return None
+
+def S_find_rms_values(_data_list):
+    """
+    Returns RMS value of data points
+    """
+
+    ds = len(_data_list)
+
+    if ds > 0:
+
+        power_sum_average = sum([val ** 2 for val in _data_list])/len(_data_list)
+
+        return sqrt(power_sum_average)
+
+    else:
+        return -1

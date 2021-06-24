@@ -22,6 +22,7 @@ from .filters import S_envelope_approximate_filter
 from .filters import S_duplicates_filter
 from .filters import S_generate_interpolate_points_data
 from .filters import S_generate_triangle_signal_values
+from .filters import S_generate_noise_signal_values
 from .filters import S_gradient_filter
 from .filters import S_kalman_filter
 from .filters import S_outlier_filter
@@ -55,4 +56,5 @@ from .mining import S_find_gradients_values
 from .mining import S_find_square_floors_values
 from .mining import S_find_input_variable
 from .mining import S_find_first_nonzero_values
-from .mining import S_find_sample_distance_values
+from .mining import S_find_sample_distance_data
+from .mining import S_find_rms_values
