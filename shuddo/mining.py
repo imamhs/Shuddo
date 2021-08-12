@@ -4,6 +4,7 @@
 """
 Data mining and analysing functions
 """
+
 from math import isclose, hypot, pi, floor, sqrt
 
 def S_get_peaks_valleys_values(_data_list, _level=0.01, _distance=1):
@@ -300,7 +301,6 @@ def S_check_similarity_values(_data_lista, _data_listb, _band=0.1, _tolerance=5)
             tol += 1
 
         if tol >= _tolerance:
-            print("Hello")
             return False
 
     return True
@@ -497,7 +497,7 @@ def S_find_square_floors_values(_data_list):
 
     return s_data
 
-def S_find_input_variable(finputs, input_var_index, for_result, f, _st=0.001, _result_tolerance=0.01, _search_direction=1):
+def S_find_input_variable(finputs, input_var_index, for_result, f, _st=0.0001, _result_tolerance=0.001, _search_direction=1):
     """
     Returns the required input parameter value of function for given function output.
     finputs is list of function parameters to be passed to the function.
@@ -570,3 +570,14 @@ def S_find_rms_values(_data_list):
 
     else:
         return -1
+
+def S_integrate_values(_data_list, _interval):
+
+    ds = len(_data_list)
+
+    if ds > 0:
+
+        return sum([val * _interval for val in _data_list])
+
+    else:
+        return None

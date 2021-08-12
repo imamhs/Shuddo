@@ -30,11 +30,13 @@ from .filters import S_difference_values
 from .filters import S_self_operate_values
 from .filters import S_aggravate_filter
 from .filters import S_round_filter
-from .filters import S_integrate_values
+from .filters import S_cumulative_sums_values
 from .filters import S_acceleration_filter
 from .filters import S_linear_model_data
 from .filters import S_linear_model_window_data
 from .filters import S_cluster_outlier_filter
+from .filters import S_envelope_approximate_filter_rms
+from .filters import S_dissimilar_filter_data
 from .mining import S_get_peaks_valleys_values
 from .mining import S_get_peak_values
 from .mining import S_get_all_peaks_values
@@ -58,3 +60,4 @@ from .mining import S_find_input_variable
 from .mining import S_find_first_nonzero_values
 from .mining import S_find_sample_distance_data
 from .mining import S_find_rms_values
+from .mining import S_integrate_values

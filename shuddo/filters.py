@@ -6,7 +6,7 @@ Data filtering functions
 """
 
 from random import random
-from math import pi, cos
+from math import pi, cos, hypot
 from shuddo import mining
 
 def S_moving_average_filter(_data_list, _smoothing=1):
@@ -759,7 +759,7 @@ def S_round_filter(_data_list, _factor=2):
 
     return r_data
 
-def S_integrate_values(_data_list, _initial_value=0):
+def S_cumulative_sums_values(_data_list, _initial_value=0):
     """
     Integrate data samples to produce new data samples
     """
@@ -818,7 +818,7 @@ def S_acceleration_filter(_data_list, _smoothing=1, _iteration=1):
     a_data = S_moving_average_filter(a_data, _smoothing=_smoothing)
 
     for i in reversed(i_values):
-        a_data = S_integrate_values(a_data, _initial_value=i)
+        a_data = S_cumulative_sums_values(a_data, _initial_value=i)
 
     return a_data
     
@@ -915,3 +915,103 @@ def S_generate_noise_signal_values(_samples, _amplitude_factor):
 
     return S_translate_values(n_data, -1 * _amplitude_factor)
 
+def S_envelope_approximate_filter_rms(_data_list, _smoothing=1, _upper=True):
+    """
+    Returns the envelope of data samples by combining RMS to moving average data.
+    Use the smoothing parameter to tweak envelope amplitude.
+    """
+
+    transform = abs(min(_data_list))
+
+    p_val = S_translate_values(_data_list, transform)
+
+    ea_data = []
+    ds = len(p_val)
+    s = _smoothing
+    mas = int((ds * 0.02) * s)
+    fc = int(mas / 2)
+    fmas = fc * 2
+
+    for i in range(ds):
+        if i < fc:
+            db = p_val[:i + i + 1]
+            nfc = len(db)
+            ma = sum(db) / nfc
+            sd = mining.S_find_rms_values(db)
+            if p_val[i] > 0:
+                if _upper == True:
+                    ea_data.append(ma+sd)
+                else:
+                    ea_data.append(ma-sd)
+            elif p_val[i] < 0:
+                if _upper == True:
+                    ea_data.append(ma-sd)
+                else:
+                    ea_data.append(ma+sd)
+            else:
+                ea_data.append(ma)
+
+        elif i >= fc:
+            if i < (ds - fc):
+                db = p_val[i - fc:i + fc + 1]
+                nfc = fmas + 1
+                ma = sum(db) / nfc
+                sd = mining.S_find_rms_values(db)
+                if p_val[i] > 0:
+                    if _upper == True:
+                        ea_data.append(ma + sd)
+                    else:
+                        ea_data.append(ma - sd)
+                elif p_val[i] < 0:
+                    if _upper == True:
+                        ea_data.append(ma - sd)
+                    else:
+                        ea_data.append(ma + sd)
+                else:
+                    ea_data.append(ma)
+            else:
+                db = p_val[i - (ds - i - 1):]
+                nfc = len(db)
+                ma = sum(db) / nfc
+                sd = mining.S_find_rms_values(db)
+                if p_val[i] > 0:
+                    if _upper == True:
+                        ea_data.append(ma + sd)
+                    else:
+                        ea_data.append(ma - sd)
+                elif p_val[i] < 0:
+                    if _upper == True:
+                        ea_data.append(ma - sd)
+                    else:
+                        ea_data.append(ma + sd)
+                else:
+                    ea_data.append(ma)
+
+    return S_translate_values(ea_data, -1*transform)
+
+def S_dissimilar_filter_data(_data_lista, _data_listb, _radius=0.1):
+    """
+    Discard values from data set where not similar when samples are aligned
+    """
+
+    dsa = len(_data_lista)
+    dsb = len(_data_listb)
+
+    if dsa != dsb:
+        return None
+
+    d_data = []
+
+    for i in range(dsa):
+
+        if hypot(_data_lista[i][0] - _data_listb[i][0], _data_lista[i][1] - _data_listb[i][1]) > _radius:
+            if i == 0:
+                d_data.append(_data_listb[i])
+            elif i == dsa-1:
+                d_data.append(_data_listb[i])
+            else:
+                d_data.append(S_linear_function(_data_lista[i-1], _data_lista[i+1], 3)[1])
+        else:
+            d_data.append(_data_lista[i])
+
+    return d_data
