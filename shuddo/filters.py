@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2021, Md Imam Hossain (emamhd at gmail dot com)
+# Copyright (c) 2019-2022, Md Imam Hossain (emamhd at gmail dot com)
 # see LICENSE.txt for details
 
 """
@@ -163,6 +163,10 @@ def S_uniform_spread_data(_data_list, _nsamples):
 
     ds = len(_data_list)
     d = _data_list[-1][0] - _data_list[0][0]
+
+    if d == 0:
+        return None
+
     sl = (d/_nsamples)
     dc = 0
 
@@ -178,6 +182,7 @@ def S_uniform_spread_data(_data_list, _nsamples):
                 break
 
         d = _data_list[dc][0] - _data_list[dc-1][0]
+
         t = (x -  _data_list[dc-1][0]) / d
 
         u_data.append((x, (_data_list[dc-1][1] * (1 - t)) + (_data_list[dc][1] * t)))
