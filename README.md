@@ -18,4 +18,4 @@ To use, just include shuddo directory into your project.
 
 Cheers!
 
-Md Imam Hossain (emamhd@gmail.com)
+Imam Hossain (emamhd@gmail.com)
