@@ -52,6 +52,8 @@ def S_get_peak_values(_data_list, _cursor=0, _base_line=0):
 
     data_point = []
     peak_value = 0
+    peak_point_location = []
+    peak_location = -1
     cursor = _cursor
     peak_start_location = -1 # negative for indicating not set
     peak_width = 0
@@ -67,16 +69,20 @@ def S_get_peak_values(_data_list, _cursor=0, _base_line=0):
             peak_start_location = cursor
             while _data_list[cursor] < _base_line:
                 data_point.append(_data_list[cursor])
+                peak_point_location.append(cursor)
                 cursor += 1
             peak_width = cursor - peak_start_location
             peak_value = min(data_point)
+            peak_location = peak_point_location[data_point.index(min(data_point))]
         elif _data_list[cursor] > _base_line:
             peak_start_location = cursor
             while _data_list[cursor] > _base_line:
                 data_point.append(_data_list[cursor])
+                peak_point_location.append(cursor)
                 cursor += 1
             peak_width = cursor - peak_start_location
             peak_value = max(data_point)
+            peak_location = peak_point_location[data_point.index(max(data_point))]
 
     except IndexError:
         if _data_list[cursor-1] < _base_line:
@@ -84,9 +90,9 @@ def S_get_peak_values(_data_list, _cursor=0, _base_line=0):
         elif _data_list[cursor-1] > _base_line:
             peak_value = max(data_point)
         peak_width = (cursor-1) - peak_start_location
-        return (_cursor + (peak_width / 2), peak_value, peak_width, peak_start_location, cursor-1)
+        return (_cursor + (peak_width / 2), peak_location, peak_value, peak_width, peak_start_location, cursor-1)
     finally:
-        return (_cursor + (peak_width/2), peak_value, peak_width, peak_start_location, cursor)
+        return (_cursor + (peak_width/2), peak_location, peak_value, peak_width, peak_start_location, cursor)
         
         
 def S_get_all_peaks_values(_data_list, _level=0.5, _step=1, _valley=False):
@@ -358,7 +364,7 @@ def S_count_leftright_values(_data_list, _value):
 
         if _value > i:
             left_c += 1
-        else:
+        elif _value < i:
             right_c += 1
 
     return (left_c, right_c)
@@ -581,3 +587,4 @@ def S_integrate_values(_data_list, _interval):
 
     else:
         return None
+

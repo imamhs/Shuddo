@@ -5,7 +5,6 @@ from .filters import S_upsample_data
 from .filters import S_cosine_function
 from .filters import S_crop_values
 from .filters import S_uniform_spread_data
-from .filters import S_smooth_data
 from .filters import S_adjust_phase_data
 from .filters import S_scale_values
 from .filters import S_change_amplitude_values
@@ -23,7 +22,8 @@ from .filters import S_duplicates_filter
 from .filters import S_generate_interpolate_points_data
 from .filters import S_generate_triangle_signal_values
 from .filters import S_generate_noise_signal_values
-from .filters import S_gradient_filter
+from .filters import S_gradient_filter_values
+from .filters import S_gradient_filter_data
 from .filters import S_kalman_filter
 from .filters import S_outlier_filter
 from .filters import S_difference_values
@@ -37,6 +37,7 @@ from .filters import S_linear_model_window_data
 from .filters import S_cluster_outlier_filter
 from .filters import S_envelope_approximate_filter_rms
 from .filters import S_dissimilar_filter_data
+from .filters import S_baseline_filter_data
 from .mining import S_get_peaks_valleys_values
 from .mining import S_get_peak_values
 from .mining import S_get_all_peaks_values

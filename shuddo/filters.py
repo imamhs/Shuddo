@@ -9,6 +9,8 @@ from random import random
 from math import pi, cos, hypot
 from shuddo import mining
 
+
+
 def S_moving_average_filter(_data_list, _smoothing=1):
     """
     Returns moving average data without data lag.
@@ -21,22 +23,26 @@ def S_moving_average_filter(_data_list, _smoothing=1):
     mas = int((ds * 0.02) * s)
     fc = int(mas/2)
     fmas = fc * 2
+    nfcl = []
 
     for i in range(ds):
         if i < fc:
             db = _data_list[:i+i+1]
             nfc = len(db)
             ma_data.append(sum(db)/nfc)
+            nfcl.append(nfc)
         elif i >= fc:
             if i < (ds - fc):
                 db = _data_list[i-fc:i+fc+1]
                 nfc = fmas+1
                 ma_data.append(sum(db)/nfc)
+                nfcl.append(nfc)
             else:
                 db = _data_list[i-(ds-i-1):]
                 nfc = len(db)
                 ma_data.append(sum(db)/nfc)
-    
+                nfcl.append(nfc)
+
     return ma_data
 
 def S_downsample_data(_data_list, _factor=1):
@@ -75,7 +81,7 @@ def S_linear_function(_point1, _point2, _npoints):
 
     while t <= 1:
         x = _point1[0] + (d*t)
-        points.append((x,(_point1[1]*(1-t))+(_point2[1]*t)))
+        points.append((x, (_point1[1]*(1-t))+(_point2[1]*t)))
         t += step
 
     return points
@@ -191,26 +197,6 @@ def S_uniform_spread_data(_data_list, _nsamples):
 
     return u_data
 
-def S_smooth_data(_data_list, _smoothing=1):
-    """
-    Returns data samples with smooth profiles applied in between the sample points.
-    """
-
-    s_data = []
-    ds = len(_data_list)
-
-    for i in range(ds-1):
-
-        inter = S_cosine_function((_data_list[i][0], _data_list[i][1]), (_data_list[i+1][0], _data_list[i+1][1]), _npoints=_smoothing+4)
-        irs = len(inter)
-
-        for ii in range(irs - 1):
-            s_data.append((inter[ii][0], inter[ii][1]))
-
-    s_data.append((_data_list[-1][0], _data_list[-1][1]))
-
-    return s_data
-
 def S_adjust_phase_data(_data_list, _transform):
     """
     Returns data samples where the phase is moved by transform amount.
@@ -305,7 +291,7 @@ def S_invert_values(_data_list):
     ds = len(_data_list)
 
     for i in range(ds):
-        i_data.append(-1*_data_list[i])
+        i_data.append(-_data_list[i])
 
     return i_data
 
@@ -333,29 +319,29 @@ def S_inverse_values(_data_list, _infinity_value='inf'):
 
     return i_data
 
-def S_translate_values(_data_list, _transform_amount):
+def S_translate_values(_data_list, _translate_amount):
     """
-    Returns data samples where samples are translated by transform amount.
+    Returns data samples where samples are translated by translate amount.
     """
 
     t_data = []
     ds = len(_data_list)
 
     for i in range(ds):
-        t_data.append(_data_list[i]+_transform_amount)
+        t_data.append(_data_list[i]+_translate_amount)
 
     return t_data
 
-def S_translate_data(_data_list, _transform_x, _transform_y):
+def S_translate_data(_data_list, _translate_x, _translate_y):
     """
-    Returns data samples where data points are translated by transform amount.
+    Returns data samples where data points are translated by translate amount.
     """
 
     t_data = []
     ds = len(_data_list)
 
     for i in range(ds):
-        t_data.append((_data_list[i][0]+_transform_x, _data_list[i][1]+_transform_y))
+        t_data.append((_data_list[i][0]+_translate_x, _data_list[i][1]+_translate_y))
 
     return t_data
 
@@ -366,24 +352,24 @@ def S_translate_to_positive_quadrant_data(_data_list):
 
     x_val, y_val = list(zip(*_data_list))
 
-    x_transform = abs(min(x_val))
-    y_transform = abs(min(y_val))
+    x_translate = abs(min(x_val))
+    y_translate = abs(min(y_val))
 
-    return S_translate_data(_data_list, x_transform, y_transform)
+    return S_translate_data(_data_list, x_translate, y_translate)
 
 def S_translate_to_positive_axis_values(_data_list):
     """
     Returns data samples where data points are translated to positive axis.
     """
 
-    transform = abs(min(_data_list))
+    translate = abs(min(_data_list))
 
-    return S_translate_values(_data_list, transform)
+    return S_translate_values(_data_list, translate)
 
 def S_envelope_filter(_data_list, _upper=True, _level=0.001, _step=1):
     """
     Returns the envelope of data samples.
-    Use the level parameter to tweak envelope detection and set upper to False to get lower envelope.
+    Use the level parameter to tweak envelope detection and set upper False to get lower envelope.
     """
 
     peaks = mining.S_get_all_peaks_values(_data_list, _level=_level, _step=_step, _valley=not _upper)
@@ -576,7 +562,7 @@ def S_generate_triangle_signal_values(_wave_length, _amplitude, _nwaves):
 
     return g_data
 
-def S_gradient_filter(_data_list, _diff=0.1):
+def S_gradient_filter_values(_data_list, _diff=0.1, _index=False):
     """
     Returns data samples where points with same gradient are discarded.
     """
@@ -595,12 +581,60 @@ def S_gradient_filter(_data_list, _diff=0.1):
         lv = abs(max(pgrad, grad))
 
         if lv == 0:
-            g_data.append(_data_list[i])
+            if _index is False:
+                g_data.append(_data_list[i])
+            else:
+                g_data.append((i, _data_list[i]))
             pgrad = grad
             continue
 
         if not ((d / lv) <= _diff):
-            g_data.append(_data_list[i])
+            if _index is False:
+                g_data.append(_data_list[i])
+            else:
+                g_data.append((i, _data_list[i]))
+            pgrad = grad
+
+    if _index is False:
+        g_data.append(_data_list[-1])
+    else:
+        g_data.append((ds-1, _data_list[-1]))
+
+    return g_data
+
+def S_gradient_filter_data(_data_list, _diff=0.1):
+    """
+    Returns data samples where points with same gradient are discarded.
+    """
+
+    g_data = []
+
+    ds = len(_data_list)
+
+    pgrad = 0
+
+    for i in range(ds-1):
+
+        grad = (_data_list[i+1][1]-_data_list[i][1])/(_data_list[i+1][0]-_data_list[i][0])
+
+        d = abs(pgrad-grad)
+
+        lv = 0
+
+        if pgrad > grad:
+            lv = abs(pgrad)
+        elif pgrad < grad:
+            lv = abs(pgrad)
+        else:
+            lv = abs(pgrad)
+
+        if lv == 0:
+            g_data.append((_data_list[i][0], _data_list[i][1]))
+            pgrad = grad
+            continue
+
+        if not ((d / lv) <= _diff):
+            g_data.append((_data_list[i][0], _data_list[i][1]))
             pgrad = grad
 
     g_data.append(_data_list[-1])
@@ -1020,3 +1054,13 @@ def S_dissimilar_filter_data(_data_lista, _data_listb, _radius=0.1):
             d_data.append(_data_lista[i])
 
     return d_data
+
+def S_baseline_filter_data(_data_list, _smoothing=10, _offset=0):
+
+    obaseline = S_invert_values(S_moving_average_filter(_data_list, _smoothing=_smoothing))
+
+    cbaseline = S_convolute_values(_data_list, obaseline)
+
+    adata = S_translate_values(cbaseline, _offset)
+
+    return adata
