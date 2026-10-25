@@ -16,6 +16,4 @@ To use, just include shuddo directory into your project.
 
 *For usages and applications restrictions please refer to LICENSE.txt*
 
-Cheers!
 
-Imam Hossain (emamhd@gmail.com)
